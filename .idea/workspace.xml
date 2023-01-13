@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="26124f8e-6433-41e3-8929-93da4cb4cfa7" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ex6.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/main/SharedUtilis.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/main/Sjavac.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/main/SymbolTable.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/main/Variable.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/main/Verifier.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/supplied_material/.idea/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/supplied_material/.idea/inspectionProfiles/profiles_settings.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/supplied_material/.idea/local_temp.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/supplied_material/.idea/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/supplied_material/.idea/modules.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/supplied_material/junit4.jar" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/supplied_material/presubmission_sjavac_tests.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/supplied_material/run_presubmission_tests.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/supplied_material/tests/test003.sjava" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/supplied_material/tests/test007.sjava" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/supplied_material/tests/test011.sjava" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/supplied_material/tests/test017.sjava" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/supplied_material/tests/test052.sjava" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/supplied_material/tests/test058.sjava" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/supplied_material/tests/test061.sjava" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/supplied_material/tests/test067.sjava" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/supplied_material/tests/test106.sjava" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/supplied_material/tests/test115.sjava" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/supplied_material/tests/test204.sjava" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/supplied_material/tests/test257.sjava" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/supplied_material/tests/test261.sjava" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/supplied_material/tests/test274.sjava" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/supplied_material/tests/test407.sjava" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/supplied_material/tests/test420.sjava" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/supplied_material/tests/test427.sjava" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/supplied_material/tests/test452.sjava" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/supplied_material/tests/test474.sjava" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/supplied_material/tests/test501.sjava" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/supplied_material/unitTesters.jar" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/supplied_material/‏‏unitTesters/Ex7TestRunner.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/supplied_material/‏‏unitTesters/Ex7Tester.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/supplied_material/‏‏unitTesters/FailedTestException.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/supplied_material/‏‏unitTesters/META-INF/MANIFEST.MF" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/supplied_material/‏‏unitTesters/TestException.java" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="ProjectId" id="2KGuB5iKl8LxO9V7jfY505Ed4Ou" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ASKED_ADD_EXTERNAL_FILES": "true",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "jdk.selected.JAVA_MODULE": "corretto-11",
+    "last_opened_file_path": "C:/Users/Raz_Z/Documents/Studies/OOP/Exs/ex6/supplied_material/tests",
+    "project.structure.last.edited": "Modules",
+    "project.structure.proportion": "0.15234375",
+    "project.structure.side.proportion": "0.2"
+  }
+}]]></component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\Raz_Z\Documents\Studies\OOP\Exs\ex6\supplied_material\tests" />
+    </key>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="26124f8e-6433-41e3-8929-93da4cb4cfa7" name="Changes" comment="" />
+      <created>1673613103725</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1673613103725</updated>
+    </task>
+    <servers />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
+  </component>
+</project>

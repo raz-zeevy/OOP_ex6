@@ -7,6 +7,7 @@ import java.util.LinkedList;
  */
 class variableMap extends HashMap<String, String> {} // dict: <variable name> -> <variable type>
 
+// TODO: adjust the symbol table to contain the information of final
 public class SymbolTable {
     private final variableMap globalSymbolTable;
     private final LinkedList<variableMap> localSymbolTables;

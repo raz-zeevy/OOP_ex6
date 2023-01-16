@@ -13,6 +13,15 @@ import static main.SharedUtilis.*;
 // TODO: add a mechanism to conclude the final output of the verifer
 // TODO: check if there is next line in the reader
 // TODO: and conclude the final output
+
+/**
+ * TODOS
+ * in the symbole table change the dsat and add final
+ * add function to check types (a == b etc')
+ * in the first read take out all the functions
+ * add functions to the Stable
+ *
+ */
 public class Verifier {
 
     private final SymbolTable symbolTable;
@@ -62,7 +71,15 @@ public class Verifier {
      */
     private void verifyMethod(){
         Pattern pattern = Pattern.compile("void\\s+([a-zA-Z]\\w*)\\s*\\((.*)\\)\\s*\\{");
+        Matcher match = pattern.matcher(line);
+        if(match.matches()){
+            String methodName = match.group(1);
+            String methodArgs = match.group(2);
+            System.out.println(methodArgs);
 
+//           symbolTable.addLocalVariable(methodName,methodArgs);
+        }
+//        return match.matches();
     }
 
     /**
@@ -112,8 +129,14 @@ public class Verifier {
     }
 
     //TODO: Omri
-    private void verifyAssignment(){
-
+    private void verifyAssignment() {
+        Pattern pattern = Pattern.compile("([a-zA-Z]\\w*)\\s*(=)\\s*([a-zA-Z]\\w*|\".*\")");
+        Matcher match = pattern.matcher(line);
+        if (match.matches()) {
+            String varName = match.group(1);
+            String varValue = match.group(3);
+            //            symbolTable.addLocalVariable(varName, varValue);
+        }
     }
 
     //TODO: Omri
@@ -123,7 +146,13 @@ public class Verifier {
      * variables without type
      */
     private void verifyCallingMethod(){
-
+            Pattern pattern = Pattern.compile("([a-zA-Z]\\w*)\\s*\\((([a-zA-Z]\\w*|\".*\"|\\d+)(,\\s*([a-zA-Z]\\w*|\".*\"|\\d+))*)?\\)");
+            Matcher match = pattern.matcher(line);
+        if (match.matches()) {
+            String funcName = match.group(1);
+            String funcArgs = match.group(2);
+            //            symbolTable.addLocalVariable(funcName, funcArgs);
+        }
     }
 
     private void verifyParameterList(){
@@ -132,12 +161,22 @@ public class Verifier {
 
     //TODO: Omri
     private void verifyIf(){
-
+        Pattern pattern = Pattern.compile("if\\s*\\((.*)\\)\\s*\\{");
+        Matcher match = pattern.matcher(line);
+        if (match.matches()) {
+            String condition = match.group(1);
+            //TODO check condition
+        }
     }
 
     //TODO: Omri
     private void verifyWhile(){
-
+        Pattern pattern = Pattern.compile("while\\s*\\((.*)\\)\\s*\\{");
+        Matcher match = pattern.matcher(line);
+        if (match.matches()) {
+            String condition = match.group(1);
+            //TODO check condition
+        }
     }
 
     /**

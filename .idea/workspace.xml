@@ -2,9 +2,12 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="26124f8e-6433-41e3-8929-93da4cb4cfa7" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/main/entities/Method.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/main/entities/ParamsContainer.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main/Sjavac.java" beforeDir="false" afterPath="$PROJECT_DIR$/main/Sjavac.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main/SymbolTable.java" beforeDir="false" afterPath="$PROJECT_DIR$/main/SymbolTable.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main/Variable.java" beforeDir="false" afterPath="$PROJECT_DIR$/main/entities/Variable.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main/Verifier.java" beforeDir="false" afterPath="$PROJECT_DIR$/main/Verifier.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -58,7 +61,7 @@
       <module name="ex6" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="main.*" />
+          <option name="PATTERN" value="main.entities.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -96,6 +99,17 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/main/Verifier.java</url>
+          <line>101</line>
+          <option name="timeStamp" value="22" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

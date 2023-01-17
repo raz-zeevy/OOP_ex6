@@ -1,49 +1,72 @@
 package main;
 
 
+import main.entities.ParamsContainer;
+import main.entities.Variable;
+
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.Reader;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import static main.SharedUtilis.*;
 
 
-// TODO: add a mechanism to conclude the final output of the verifer
 // TODO: check if there is next line in the reader
 // TODO: and conclude the final output
-
+// TODO: add checks to all the methods that add to SymbolTable to raise exception on duplicates
 /**
  * TODOS
- * in the symbole table change the dsat and add final
- * add function to check types (a == b etc')
+ * add function to check types (a == b etc.)
  * in the first read take out all the functions
- * add functions to the Stable
  *
  */
 public class Verifier {
 
     private final SymbolTable symbolTable;
-    private final BufferedReader reader;
+    private BufferedReader reader;
     private String line;
+    private boolean methodReadMode = false;
+    private int lineNumber;
 
-    public Verifier(BufferedReader reader) throws IOException {
-        this.reader = reader;
+    public Verifier() {;
         symbolTable = new SymbolTable();
+    }
+
+    public void printSymbolTable(){
+        symbolTable.printSymbolTable();
+    }
+
+    public void initReader(BufferedReader reader) {
+        this.lineNumber = 0;
+        this.reader = reader;
         nextLine();
     }
-    public void verify(){
+
+    public void verify(BufferedReader reader){
+        initReader(reader);
         verifyGlobalVarDec();
         for( ;line != null; nextLine()){
             verifyMethod();
         }
     }
+
+    //TODO: Raz
+    public void getMethods(BufferedReader reader){
+        initReader(reader);
+        methodReadMode = true;
+        for( ;line != null; nextLine()){
+            verifyMethod();
+        }
+    }
+
+    //TODO: Raz
     public void nextLine(){
         try {
             line = reader.readLine();
-            while (verifyComment()) {
+            lineNumber++;
+            while (line != null && (verifyComment() || line.trim().isEmpty())) {
                 line = reader.readLine();
+                lineNumber++;
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -69,17 +92,20 @@ public class Verifier {
      * *******************
      * Only void methods are supported.
      */
-    private void verifyMethod(){
+    private void verifyMethod() {
         Pattern pattern = Pattern.compile("void\\s+([a-zA-Z]\\w*)\\s*\\((.*)\\)\\s*\\{");
         Matcher match = pattern.matcher(line);
         if(match.matches()){
             String methodName = match.group(1);
-            String methodArgs = match.group(2);
-            System.out.println(methodArgs);
-
-//           symbolTable.addLocalVariable(methodName,methodArgs);
+            String methodParams = match.group(2);
+            if (!verifyParameterList(methodParams)){
+                throw new RuntimeException("Line "+lineNumber+": Invalid method parameters");
+            }
+            if (methodReadMode) {
+                ParamsContainer params = getParameters(methodParams);
+                symbolTable.addMethod(methodName, params);
+            }
         }
-//        return match.matches();
     }
 
     /**
@@ -155,8 +181,28 @@ public class Verifier {
         }
     }
 
-    private void verifyParameterList(){
+    // TODO: Raz
+    private boolean verifyParameterList(String params){
+        String varsTypesRx = String.join("|", variableTypes);
+        String regPattern = "(\\s*(final\\s)?("+varsTypesRx+")\\s+([a-zA-Z]\\w*)\\s*[,]?)*";
+        Pattern pattern = Pattern.compile(regPattern);
+        Matcher match = pattern.matcher(params);
+        return match.matches();
+    }
 
+    //TODO: Raz
+    private ParamsContainer getParameters(String paramsString){
+        ParamsContainer params = new ParamsContainer();
+        String varsTypesRx = String.join("|", variableTypes);
+        Pattern pattern = Pattern.compile("(final\\s)?("+varsTypesRx+")\\s+([a-zA-Z]\\w*)(,)?");
+        Matcher match = pattern.matcher(paramsString);
+        while(match.find()){
+            String varFinal = match.group(1);
+            String varType = match.group(2);
+            String varName = match.group(3);
+            params.add(new Variable(varName, varType, varFinal != null));
+        }
+        return params;
     }
 
     //TODO: Omri

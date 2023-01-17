@@ -3,7 +3,6 @@ package main;
 
 import main.entities.ParamsContainer;
 import main.entities.Variable;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.regex.Matcher;
@@ -21,7 +20,6 @@ import static main.SharedUtilis.*;
  * add function to check types (a == b etc')
  * in the first read take out all the functions
  * add functions to the Stable
- *
  */
 public class Verifier {
 
@@ -50,7 +48,6 @@ public class Verifier {
         verifyGlobalVarDec();
         for( ;line != null; nextLine()){
             verifyMethod();
-
         }
     }
 
@@ -61,6 +58,7 @@ public class Verifier {
         for( ;line != null; nextLine()){
             verifyMethod();
         }
+        methodReadMode = false;
     }
 
     //TODO: Raz
@@ -74,6 +72,12 @@ public class Verifier {
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    private void verifyEndBlock() {
+        if (!line.strip().equals("}")){
+            throw new RuntimeException("Line "+lineNumber+": Invalid method body");
         }
     }
 
@@ -108,13 +112,15 @@ public class Verifier {
             if (methodReadMode) {
                 ParamsContainer params = getParameters(methodParams);
                 symbolTable.addMethod(methodName, params);
+            } else {
+                nextLine();
+                verifyMethodBody();
+                verifyEndBlock();
             }
-            String methodArgs = match.group(2);
-//            System.out.println("verifyMethod! "+"methodName: "+methodName+" methodArgs: "+methodArgs);
-
-//           symbolTable.addLocalVariable(methodName,methodArgs);
         }
-//        return match.matches();
+        else if (!methodReadMode){
+            throw new RuntimeException("Line "+lineNumber+": Invalid method declaration");
+        }
     }
 
     /**
@@ -122,11 +128,14 @@ public class Verifier {
      * Variable assignment lines
      */
     private void verifyMethodBody(){
-
+        while (verifyStatement()){
+            nextLine();
+        }
+        verifyEndBlock();
     }
 
     private void verifyGlobalVarDec(){
-        while (verifyVarDec("GLOBAL")){
+        while (verifyVarDec()){
             nextLine();
         }
     }
@@ -137,7 +146,7 @@ public class Verifier {
      * Variable declaration lines
      * check variable naming conventions in sJava
      */
-    private boolean verifyVarDec(String scope){
+    private boolean verifyVarDec(){
         String varsTypesRx = String.join("|", variableTypes);
         Pattern pattern = Pattern.compile("(final\\s)?("+varsTypesRx+")\\s+([a-zA-Z]\\w*)\\s*(;|=\\s*\\S;)?");
         Matcher match = pattern.matcher(line);
@@ -159,12 +168,13 @@ public class Verifier {
      * eg: "return 5;"
      * eg: "foo(5,6);"
      */
-    private void verifyStatement(){
-
+    private boolean verifyStatement(){
+        return verifyAssignment() || verifyVarDec() || verifyIf() ||
+                verifyReturn() || verifyCallingMethod();
     }
 
     //TODO: Omri
-    private void verifyAssignment() {
+    private boolean verifyAssignment() {
         Pattern pattern = Pattern.compile("\\s*([a-zA-Z]\\w*)\\s*(=)\\s*([a-zA-Z]\\w*|\".*\")");
         Matcher match = pattern.matcher(line);
         if (match.matches()) {
@@ -172,6 +182,7 @@ public class Verifier {
             String varValue = match.group(3);
             //            symbolTable.addLocalVariable(varName, varValue);
         }
+        return match.matches();
     }
 
     //TODO: Omri
@@ -180,7 +191,7 @@ public class Verifier {
      * eg: "foo(a,b); a and b must be existing variables"
      * variables without type
      */
-    private void verifyCallingMethod(){
+    private boolean verifyCallingMethod(){
             Pattern pattern = Pattern.compile("\\s*([a-zA-Z]\\w*)\\s*\\((([a-zA-Z]\\w*|\".*\"|\\d+)(,\\s*([a-zA-Z]\\w*|\".*\"|\\d+))*)?\\)(;)");
             Matcher match = pattern.matcher(line);
         if (match.matches()) {
@@ -188,6 +199,7 @@ public class Verifier {
             String funcArgs = match.group(2);
             //            symbolTable.addLocalVariable(funcName, funcArgs);
         }
+        return match.matches();
     }
 
     // TODO: Raz
@@ -215,23 +227,25 @@ public class Verifier {
     }
 
     //TODO: Omri
-    private void verifyIf(){
+    private boolean verifyIf(){
         Pattern pattern = Pattern.compile("\\s*if\\s*\\((.*)\\)\\s*\\{");
         Matcher match = pattern.matcher(line);
         if (match.matches()) {
             String condition = match.group(1);
             //TODO check condition
         }
+        return match.matches();
     }
 
     //TODO: Omri
-    private void verifyWhile(){
+    private boolean verifyWhile(){
         Pattern pattern = Pattern.compile("\\s*while\\s*\\((.*)\\)\\s*\\{");
         Matcher match = pattern.matcher(line);
         if (match.matches()) {
             String condition = match.group(1);
             //TODO check condition
         }
+        return match.matches();
     }
 
     /**
@@ -249,13 +263,14 @@ public class Verifier {
     }
 
     //TODO: Omri
-    private void verifyReturn(){
+    private boolean verifyReturn(){
         Pattern pattern = Pattern.compile("\\s*return\\s*\\{");
         Matcher match = pattern.matcher(line);
         if (match.matches()) {
             String streturn = match.group(1);
             //TODO works
         }
+        return match.matches();
     }
 
 }

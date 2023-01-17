@@ -11,13 +11,16 @@ import java.util.regex.Pattern;
 import static main.SharedUtilis.*;
 
 
+// TODO: add a mechanism to conclude the final output of the verifer
 // TODO: check if there is next line in the reader
 // TODO: and conclude the final output
-// TODO: add checks to all the methods that add to SymbolTable to raise exception on duplicates
+
 /**
  * TODOS
- * add function to check types (a == b etc.)
+ * in the symbole table change the dsat and add final
+ * add function to check types (a == b etc')
  * in the first read take out all the functions
+ * add functions to the Stable
  *
  */
 public class Verifier {
@@ -47,6 +50,7 @@ public class Verifier {
         verifyGlobalVarDec();
         for( ;line != null; nextLine()){
             verifyMethod();
+
         }
     }
 
@@ -92,7 +96,7 @@ public class Verifier {
      * *******************
      * Only void methods are supported.
      */
-    private void verifyMethod() {
+    private void verifyMethod(){
         Pattern pattern = Pattern.compile("void\\s+([a-zA-Z]\\w*)\\s*\\((.*)\\)\\s*\\{");
         Matcher match = pattern.matcher(line);
         if(match.matches()){
@@ -105,7 +109,12 @@ public class Verifier {
                 ParamsContainer params = getParameters(methodParams);
                 symbolTable.addMethod(methodName, params);
             }
+            String methodArgs = match.group(2);
+//            System.out.println("verifyMethod! "+"methodName: "+methodName+" methodArgs: "+methodArgs);
+
+//           symbolTable.addLocalVariable(methodName,methodArgs);
         }
+//        return match.matches();
     }
 
     /**
@@ -156,7 +165,7 @@ public class Verifier {
 
     //TODO: Omri
     private void verifyAssignment() {
-        Pattern pattern = Pattern.compile("([a-zA-Z]\\w*)\\s*(=)\\s*([a-zA-Z]\\w*|\".*\")");
+        Pattern pattern = Pattern.compile("\\s*([a-zA-Z]\\w*)\\s*(=)\\s*([a-zA-Z]\\w*|\".*\")");
         Matcher match = pattern.matcher(line);
         if (match.matches()) {
             String varName = match.group(1);
@@ -172,7 +181,7 @@ public class Verifier {
      * variables without type
      */
     private void verifyCallingMethod(){
-            Pattern pattern = Pattern.compile("([a-zA-Z]\\w*)\\s*\\((([a-zA-Z]\\w*|\".*\"|\\d+)(,\\s*([a-zA-Z]\\w*|\".*\"|\\d+))*)?\\)");
+            Pattern pattern = Pattern.compile("\\s*([a-zA-Z]\\w*)\\s*\\((([a-zA-Z]\\w*|\".*\"|\\d+)(,\\s*([a-zA-Z]\\w*|\".*\"|\\d+))*)?\\)(;)");
             Matcher match = pattern.matcher(line);
         if (match.matches()) {
             String funcName = match.group(1);
@@ -207,7 +216,7 @@ public class Verifier {
 
     //TODO: Omri
     private void verifyIf(){
-        Pattern pattern = Pattern.compile("if\\s*\\((.*)\\)\\s*\\{");
+        Pattern pattern = Pattern.compile("\\s*if\\s*\\((.*)\\)\\s*\\{");
         Matcher match = pattern.matcher(line);
         if (match.matches()) {
             String condition = match.group(1);
@@ -217,7 +226,7 @@ public class Verifier {
 
     //TODO: Omri
     private void verifyWhile(){
-        Pattern pattern = Pattern.compile("while\\s*\\((.*)\\)\\s*\\{");
+        Pattern pattern = Pattern.compile("\\s*while\\s*\\((.*)\\)\\s*\\{");
         Matcher match = pattern.matcher(line);
         if (match.matches()) {
             String condition = match.group(1);
@@ -228,16 +237,25 @@ public class Verifier {
     /**
      * this method verifies the condition of the if statement
      * the condition is strictly defined by the s-java description (Section 5.4)
+     * eg: "if (false) {"
      * eg: "if (a) {"
+     * eg: "if (3) {"
      * eg: "if (isFantastic && -3.25 || true) {"
      */
     private void verifyCondition(){
-
+        String boolTypesRx = String.join("|", conditionables);
+        Pattern pattern = Pattern.compile("\\s*\\(\\s*"+boolTypesRx+"|[a-zA-Z]\\w*|-?\\d+\\s*");
+        Matcher match = pattern.matcher(line);
     }
 
     //TODO: Omri
     private void verifyReturn(){
-
+        Pattern pattern = Pattern.compile("\\s*return\\s*\\{");
+        Matcher match = pattern.matcher(line);
+        if (match.matches()) {
+            String streturn = match.group(1);
+            //TODO works
+        }
     }
 
 }

@@ -17,6 +17,7 @@ public class SharedUtilis {
     public static final String[] variableTypes = {INT, DOUBLE, "String", BOOLEAN, "char"};
     public static final String[] keywords = {"void", "final"," if", "while", TRUE, FALSE
             , "return"};
+    public static final String[] endLine = {";","{","}"};
 
     /**   If and While conditions   **/
     public static final String[] conditionables = {TRUE, FALSE};

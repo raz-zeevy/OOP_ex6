@@ -1,40 +1,72 @@
 package main;
 
 
+import main.entities.ParamsContainer;
+import main.entities.Variable;
+
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.Reader;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import static main.SharedUtilis.*;
 
 
-// TODO: add a mechanism to conclude the final output of the verifer
 // TODO: check if there is next line in the reader
 // TODO: and conclude the final output
+// TODO: add checks to all the methods that add to SymbolTable to raise exception on duplicates
+/**
+ * TODOS
+ * add function to check types (a == b etc.)
+ * in the first read take out all the functions
+ *
+ */
 public class Verifier {
 
     private final SymbolTable symbolTable;
-    private final BufferedReader reader;
+    private BufferedReader reader;
     private String line;
+    private boolean methodReadMode = false;
+    private int lineNumber;
 
-    public Verifier(BufferedReader reader) throws IOException {
-        this.reader = reader;
+    public Verifier() {;
         symbolTable = new SymbolTable();
+    }
+
+    public void printSymbolTable(){
+        symbolTable.printSymbolTable();
+    }
+
+    public void initReader(BufferedReader reader) {
+        this.lineNumber = 0;
+        this.reader = reader;
         nextLine();
     }
-    public void verify(){
+
+    public void verify(BufferedReader reader){
+        initReader(reader);
         verifyGlobalVarDec();
         for( ;line != null; nextLine()){
             verifyMethod();
         }
     }
+
+    //TODO: Raz
+    public void getMethods(BufferedReader reader){
+        initReader(reader);
+        methodReadMode = true;
+        for( ;line != null; nextLine()){
+            verifyMethod();
+        }
+    }
+
+    //TODO: Raz
     public void nextLine(){
         try {
             line = reader.readLine();
-            while (verifyComment()) {
+            lineNumber++;
+            while (line != null && (verifyComment() || line.trim().isEmpty())) {
                 line = reader.readLine();
+                lineNumber++;
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -52,19 +84,31 @@ public class Verifier {
      * parameters is a comma-separated list of parameters.
      * Each parameter is a pair of a valid type
      * and a valid variable name, without a value.
-     * *******************
+     * *******
      * method name is defined similarly to variable names (i.e., a sequence of length > 0,
      * containing letters (uppercase or lowercase), digits and underscore),
      * with the exception that method  names must start with a letter
      * (i.e., they may not start with a digit or an underscore).
-     * *******************
+     * *******
      * Only void methods are supported.
      */
-    private void verifyMethod(){
+    private void verifyMethod() {
         Pattern pattern = Pattern.compile("void\\s+([a-zA-Z]\\w*)\\s*\\((.*)\\)\\s*\\{");
-
+        Matcher match = pattern.matcher(line);
+        if(match.matches()){
+            String methodName = match.group(1);
+            String methodParams = match.group(2);
+            if (!verifyParameterList(methodParams)){
+                throw new RuntimeException("Line "+lineNumber+": Invalid method parameters");
+            }
+            if (methodReadMode) {
+                ParamsContainer params = getParameters(methodParams);
+                symbolTable.addMethod(methodName, params);
+            }
+        }
     }
 
+    //TODO: Raz
     /**
      * Local variable declaration lines
      * Variable assignment lines
@@ -73,6 +117,7 @@ public class Verifier {
 
     }
 
+    // TODO: Raz
     private void verifyGlobalVarDec(){
         while (verifyVarDec("GLOBAL")){
             nextLine();
@@ -80,6 +125,7 @@ public class Verifier {
     }
 
 
+    // TODO: Raz
     /**
      * eg: "int a = 5;"
      * Variable declaration lines
@@ -99,6 +145,7 @@ public class Verifier {
         return match.matches();
     }
 
+    // TODO: Raz
     /**
      * eg: "a = 5;" variable assignment lines
      * eg: "int a = 5;" variable declaration line
@@ -112,8 +159,14 @@ public class Verifier {
     }
 
     //TODO: Omri
-    private void verifyAssignment(){
-
+    private void verifyAssignment() {
+        Pattern pattern = Pattern.compile("([a-zA-Z]\\w*)\\s*(=)\\s*([a-zA-Z]\\w*|\".*\")");
+        Matcher match = pattern.matcher(line);
+        if (match.matches()) {
+            String varName = match.group(1);
+            String varValue = match.group(3);
+            //            symbolTable.addLocalVariable(varName, varValue);
+        }
     }
 
     //TODO: Omri
@@ -123,23 +176,60 @@ public class Verifier {
      * variables without type
      */
     private void verifyCallingMethod(){
-
+        Pattern pattern = Pattern.compile("([a-zA-Z]\\w*)\\s*\\((([a-zA-Z]\\w*|\".\"|\\d+)(,\\s([a-zA-Z]\\w*|\".\"|\\d+)))?\\)");
+        Matcher match = pattern.matcher(line);
+        if (match.matches()) {
+            String funcName = match.group(1);
+            String funcArgs = match.group(2);
+            //            symbolTable.addLocalVariable(funcName, funcArgs);
+        }
     }
 
-    private void verifyParameterList(){
+    // TODO: Raz
+    private boolean verifyParameterList(String params){
+        String varsTypesRx = String.join("|", variableTypes);
+        String regPattern = "(\\s*(final\\s)?("+varsTypesRx+")\\s+([a-zA-Z]\\w*)\\s*[,]?)*";
+        Pattern pattern = Pattern.compile(regPattern);
+        Matcher match = pattern.matcher(params);
+        return match.matches();
+    }
 
+    //TODO: Raz
+    private ParamsContainer getParameters(String paramsString){
+        ParamsContainer params = new ParamsContainer();
+        String varsTypesRx = String.join("|", variableTypes);
+        Pattern pattern = Pattern.compile("(final\\s)?("+varsTypesRx+")\\s+([a-zA-Z]\\w*)(,)?");
+        Matcher match = pattern.matcher(paramsString);
+        while(match.find()){
+            String varFinal = match.group(1);
+            String varType = match.group(2);
+            String varName = match.group(3);
+            params.add(new Variable(varName, varType, varFinal != null));
+        }
+        return params;
     }
 
     //TODO: Omri
     private void verifyIf(){
-
+        Pattern pattern = Pattern.compile("if\\s*\\((.)\\)\\s\\{");
+        Matcher match = pattern.matcher(line);
+        if (match.matches()) {
+            String condition = match.group(1);
+            //TODO check condition
+        }
     }
 
     //TODO: Omri
     private void verifyWhile(){
-
+        Pattern pattern = Pattern.compile("while\\s*\\((.)\\)\\s\\{");
+        Matcher match = pattern.matcher(line);
+        if (match.matches()) {
+            String condition = match.group(1);
+            //TODO check condition
+        }
     }
 
+    // TODO: Omri
     /**
      * this method verifies the condition of the if statement
      * the condition is strictly defined by the s-java description (Section 5.4)

@@ -4,9 +4,9 @@ import java.util.HashSet;
 
 public class Method {
     private String name;
-    private HashSet<Variable> parameters;
+    private ParamsContainer parameters;
 
-    public Method(String name, HashSet<Variable> parameters) {
+    public Method(String name, ParamsContainer parameters) {
         this.name = name;
         this.parameters = parameters;
     }
@@ -16,7 +16,7 @@ public class Method {
     }
 
 
-    public HashSet<Variable> getParameters() {
+    public ParamsContainer getParameters() {
         return parameters;
     }
 

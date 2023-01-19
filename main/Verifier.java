@@ -12,16 +12,15 @@ import java.util.regex.Pattern;
 import static main.SharedUtilis.*;
 
 
-// TODO: add a mechanism to conclude the final output of the verifer
-// TODO: check if there is next line in the reader
-// TODO: and conclude the final output
+/**
+ 1. Verify entire code
+ 2. if no exceptions were thrown, return 0
+ 3. else, return 1 and print the exception msg
+/**
 
 /**
  * TODOS
- * in the symbole table change the dsat and add final
- * add function to check types (a == b etc')
- * in the first read take out all the functions
- * add functions to the Stable
+ * add function to check types (a == b etc') TODO: Raz
  */
 public class Verifier {
 
@@ -50,10 +49,7 @@ public class Verifier {
         initReader(reader);
         verifyGlobalVarDec();
         for (; line != null; nextLine()) {
-            if (!verifyClosingBracket()) { //TODO change it
-                verifyMethod();
-                verifyAssignment();
-            }
+            verifyMethod();
         }
     }
 
@@ -83,7 +79,7 @@ public class Verifier {
 
     private void verifyEndBlock() {
         if (!line.strip().equals("}")) {
-            throw new RuntimeException("Line " + lineNumber + ": Invalid method body");
+            throwVerifierException("Invalid method body");
         }
     }
 
@@ -91,6 +87,21 @@ public class Verifier {
         Pattern pattern = Pattern.compile("//.*");
         return pattern.matcher(line).matches();
     }
+
+    /**
+     *
+     * @param type
+     * @param expression
+     * @return true if expression is of type "type"
+     */
+    public boolean verifyType(String expression, String type){
+    // check if in symbol table
+        // if yes, check if type is the same
+    // if not regex to check if it's a literal or a number
+
+        return true;
+    }
+
 
     //TODO: Omri
 
@@ -114,7 +125,7 @@ public class Verifier {
             String methodName = match.group(1);
             String methodParams = match.group(2);
             if (!verifyParameterList(methodParams)) {
-                throw new RuntimeException("Line " + lineNumber + ": Invalid method parameters");
+                throwVerifierException("Invalid method parameters");
             }
             if (methodReadMode) {
                 ParamsContainer params = getParameters(methodParams);
@@ -125,7 +136,7 @@ public class Verifier {
                 verifyEndBlock();
             }
         } else if (!methodReadMode) {
-            throw new RuntimeException("Line " + lineNumber + ": Invalid method declaration");
+            throwVerifierException("Invalid method declaration");
         }
     }
 
@@ -137,7 +148,6 @@ public class Verifier {
         while (verifyStatement()) {
             nextLine();
         }
-        verifyEndBlock();
     }
 
     private void verifyGlobalVarDec() {
@@ -146,7 +156,7 @@ public class Verifier {
         }
     }
 
-
+    //TODO: Raz
     /**
      * eg: "int a = 5;"
      * Variable declaration lines
@@ -154,7 +164,8 @@ public class Verifier {
      */
     private boolean verifyVarDec() {
         String varsTypesRx = String.join("|", variableTypes);
-        Pattern pattern = Pattern.compile("(final\\s)?(" + varsTypesRx + ")\\s+([a-zA-Z]\\w*)\\s*(;|=\\s*\\S;)?");
+        Pattern pattern = Pattern.compile("\\s*(final\\s)?(" + varsTypesRx + ")\\s+([a-zA-Z]\\w*)\\s*(;" +
+                "|=\\s*\\S*;)?");
         Matcher match = pattern.matcher(line);
         if (match.matches()) {
             String varFinal = match.group(1);
@@ -187,11 +198,13 @@ public class Verifier {
             String varName = match.group(1);
             String varValue = match.group(2);
         }
+        // TODO: check if exist in symbolTable
+        // TODO: check if type of varValue is the same type as variable
+        // TODO: check if not final
         return match.matches();
     }
 
     //TODO: Omri
-
     /**
      * only void methods are supported
      * eg: "foo(a,b); a and b must be existing variables"
@@ -200,6 +213,9 @@ public class Verifier {
     private boolean verifyCallingMethod() {
         Pattern pattern = Pattern.compile("\\s*([a-zA-Z]\\w*)\\s*\\((([a-zA-Z]\\w*|\".*\"|\\d+)(,\\s*([a-zA-Z]\\w*|\".*\"|\\d+))*)?\\);");
         Matcher match = pattern.matcher(line);
+        // TODO: extract arguments
+        // TODO: check if arguments fit function paramters
+        // TODO: check if methodName exists
         return match.matches();
     }
 
@@ -231,6 +247,15 @@ public class Verifier {
     private boolean verifyIf() {
         Pattern pattern = Pattern.compile("\\s*if\\s*\\((.*)\\)\\s*\\{");
         Matcher match = pattern.matcher(line);
+        if (match.matches()) {
+            String condition = match.group(1);
+            verifyCondition(condition);
+            nextLine();
+            while (verifyStatement()) {
+                nextLine();
+            }
+            verifyEndBlock();
+        }
         return match.matches();
     }
 
@@ -238,9 +263,19 @@ public class Verifier {
     private boolean verifyWhile() {
         Pattern pattern = Pattern.compile("\\s*while\\s*\\((.*)\\)\\s*\\{");
         Matcher match = pattern.matcher(line);
+        if (match.matches()) {
+            String condition = match.group(1);
+            verifyCondition(condition);
+            nextLine();
+            while (verifyStatement()) {
+                nextLine();
+            }
+            verifyEndBlock();
+        }
         return match.matches();
     }
 
+    // Todo: Omri
     /**
      * this method verifies the condition of the if statement
      * the condition is strictly defined by the s-java description (Section 5.4)
@@ -249,10 +284,12 @@ public class Verifier {
      * eg: "if (3) {"
      * eg: "if (isFantastic && -3.25 || true) {"
      */
-    private boolean verifyCondition() {
+    private boolean verifyCondition(String condition) {
         String boolTypesRx = String.join("|", conditionables);
         Pattern pattern = Pattern.compile("((([a-zA-Z]\\w*)|(-?\\d*.?\\d+))\\s*(\\|\\||&&)\\s)+");
         Matcher match = pattern.matcher(line);
+        // TODO: raise Exception when condition is not valid
+        // TODO: check types of variables with symboltable
         return match.matches();
     }
 
@@ -263,10 +300,8 @@ public class Verifier {
         return match.matches();
     }
 
-    private boolean verifyClosingBracket() {
-        Pattern pattern = Pattern.compile("\\s*}\\s*");
-        Matcher match = pattern.matcher(line);
-        return match.matches();
+    private void throwVerifierException(String message) {
+        throw new RuntimeException("Line " + lineNumber + ": "+message);
     }
 
 

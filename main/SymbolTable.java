@@ -64,9 +64,16 @@ public class SymbolTable {
         localSymbolTables.getLast().put(varName, new Variable(varName, varType, varFinal));
     }
 
-    // TOOD: finish this method
     public void addMethod(String methodName, ParamsContainer parameters) {
         methodSymbolTable.put(methodName, new Method(methodName, parameters));
+    }
+
+    public boolean methodExists(String methodName) {
+        return methodSymbolTable.containsKey(methodName);
+    }
+
+    public ParamsContainer getMethodParams(String methodName) {
+        return methodSymbolTable.get(methodName).getParameters();
     }
 
     /**

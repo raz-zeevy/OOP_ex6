@@ -3,8 +3,11 @@ package main;
 public class SharedUtilis {
 
     /** Keywords Types **/
-    static final String NUM_CONSTANT = "NumConstant";
-    static final String STRING_CONSTANT = "stringConstant";
+    static final String NUM_LITERAL = "NumLiteral";
+    static final String INT_LITERAL = "IntLiteral";
+    static final String BOOLEAN_LITERAL = "BooleanLiteral";
+    static final String DOUBLE_LITERAL = "doubleLiteral";
+    static final String STRING_LITERAL = "StringLiteral";
 
     /**  types  **/
     public static final String INT = "int";
@@ -25,7 +28,7 @@ public class SharedUtilis {
 
     /**   If and While conditions   **/
     public static final String[] conditionables = {TRUE, FALSE};
-    public static final String[] conditionableTypes = {BOOLEAN, DOUBLE, INT, NUM_CONSTANT};
+    public static final String[] conditionableTypes = {BOOLEAN, DOUBLE, INT, NUM_LITERAL};
     public static final String[] concditionOperators = {"||", "&&"};
     public static final int MAX_RECURSIVE_CONDITIONS = java.lang.Integer.MAX_VALUE;
 

@@ -3,9 +3,11 @@
   <component name="ChangeListManager">
     <list default="true" id="26124f8e-6433-41e3-8929-93da4cb4cfa7" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main/SharedUtilis.java" beforeDir="false" afterPath="$PROJECT_DIR$/main/SharedUtilis.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main/Sjavac.java" beforeDir="false" afterPath="$PROJECT_DIR$/main/Sjavac.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main/SymbolTable.java" beforeDir="false" afterPath="$PROJECT_DIR$/main/SymbolTable.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main/Verifier.java" beforeDir="false" afterPath="$PROJECT_DIR$/main/Verifier.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main/entities/Method.java" beforeDir="false" afterPath="$PROJECT_DIR$/main/entities/Method.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main/entities/Variable.java" beforeDir="false" afterPath="$PROJECT_DIR$/main/entities/Variable.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -96,17 +98,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
-  </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/main/Verifier.java</url>
-          <line>253</line>
-          <option name="timeStamp" value="6" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

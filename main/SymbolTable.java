@@ -4,7 +4,6 @@ import main.entities.ParamsContainer;
 import main.entities.Variable;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedList;
 
 /**
@@ -55,20 +54,18 @@ public class SymbolTable {
         return localSymbolTable.containsKey(name);
     }
 
-    public void addGlobalVariable(String varName, String varType, boolean varFinal) {
-        globalSymbolTable.put(varName,
-                new Variable(varName, varType, varFinal));
-    }
-
-    public void addLocalVariable(String varName, String varType, boolean varFinal) {
-        localSymbolTables.getLast().put(varName, new Variable(varName, varType, varFinal));
+    public void addVariable(String varName, String varType, boolean varFinal) {
+        if (localSymbolTables.size() != 0)
+            localSymbolTables.getLast().put(varName, new Variable(varName, varType, varFinal));
+        else
+            globalSymbolTable.put(varName, new Variable(varName, varType, varFinal));
     }
 
     public void addMethod(String methodName, ParamsContainer parameters) {
         methodSymbolTable.put(methodName, new Method(methodName, parameters));
     }
 
-    public boolean methodExists(String methodName) {
+    public boolean isMethodExists(String methodName) {
         return methodSymbolTable.containsKey(methodName);
     }
 
@@ -88,6 +85,16 @@ public class SymbolTable {
      */
     public void removeLocalSymbolTable() {
         localSymbolTables.removeLast();
+    }
+
+    public void initVariable(String varName) {
+        Variable var = getVariable(varName);
+        if (var != null) {
+            var.init();
+        } else {
+            throw new RuntimeException("BAD CODE USAGE: first check if variable exists before initializing " +
+                    "it");
+        }
     }
 
     public void printSymbolTable() {

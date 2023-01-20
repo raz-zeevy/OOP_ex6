@@ -3,8 +3,8 @@ import java.io.*;
 
 public class Sjavac {
     public static void main(String[] args) {
-//        String path = "D:/LIMUDIJM/שנה ג/OOP/ex6/OOP_ex6/test501.sjava";
-        String path = "supplied_material/tests/test501OMRIKI.sjava";
+        String path = "D:/LIMUDIJM/שנה ג/OOP/ex6/OOP_ex6/test501.sjava";
+//        String path = "supplied_material/tests/test501OMRIKI.sjava";
         var file = new File(path);
         var verifier = new Verifier();
         try (BufferedReader reader =

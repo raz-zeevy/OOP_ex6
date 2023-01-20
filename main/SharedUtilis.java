@@ -12,9 +12,13 @@ public class SharedUtilis {
     public static final String DOUBLE = "double";
     public static final String TRUE = "true";
     public static final String FALSE = "false";
+    public static final String STRING = "String";
+    public static final String CHAR =  "char";
 
     /**  compiling constants  **/
-    public static final String[] variableTypes = {INT, DOUBLE, "String", BOOLEAN, "char"};
+    enum Types { BOOLEAN, DOUBLE, INT, NUM_CONSTANT, STRING, CHAR }
+    public static final String[] variableTypes = {INT, DOUBLE, STRING, BOOLEAN, CHAR};
+
     public static final String[] keywords = {"void", "final"," if", "while", TRUE, FALSE
             , "return"};
     public static final String[] endLine = {";","{","}"};

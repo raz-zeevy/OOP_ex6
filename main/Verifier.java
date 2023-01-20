@@ -91,7 +91,7 @@ public class Verifier {
     /**
      *
      * @param type
-     * @param expression
+     * @param expressionע
      * @return true if expression is of type "type"
      */
     public boolean verifyType(String expression, String type){
@@ -210,13 +210,57 @@ public class Verifier {
      * eg: "foo(a,b); a and b must be existing variables"
      * variables without type
      */
+
+
     private boolean verifyCallingMethod() {
         Pattern pattern = Pattern.compile("\\s*([a-zA-Z]\\w*)\\s*\\((([a-zA-Z]\\w*|\".*\"|\\d+)(,\\s*([a-zA-Z]\\w*|\".*\"|\\d+))*)?\\);");
         Matcher match = pattern.matcher(line);
-        // TODO: extract arguments
-        // TODO: check if arguments fit function paramters
-        // TODO: check if methodName exists
+        while (match.find()) {
+            String methodName = match.group(1);
+            String methodArgs = match.group(2);
+            if (!checkMethodsCallParams(methodName, methodArgs)){ return false;}
+        }
         return match.matches();
+    }
+
+    private boolean checkMethodsCallParams(String methodName, String MethodArgs){
+        if (!symbolTable.methodExists(methodName)) { return false;} //Check if method exits
+        String[] vars =  MethodArgs.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)");
+        ParamsContainer params =  symbolTable.getMethodParams(methodName);
+        if (params.size() != vars.length) { return false;}; // check if number of params of the method are equal to the vars
+        int i = 0;
+        for (Variable param: params) {
+            if (!param.getType().equals(getStringType(vars[i]))){
+                return false; //check if arguments fit function paramters
+            }
+            i++;
+        }
+        return true;
+    }
+
+    public static String getStringType(String myString) {
+        try {
+            Integer.parseInt(myString);
+            return INT;
+        } catch (NumberFormatException e) {
+            try {
+                Double.parseDouble(myString);
+                return DOUBLE;
+            } catch (NumberFormatException e1) {
+                if (myString.equalsIgnoreCase(TRUE) || myString.equalsIgnoreCase(FALSE)) {
+                    try {
+                        Boolean.parseBoolean(myString);
+                        return BOOLEAN;
+                    } catch (Exception e2) {
+                    }
+                }
+                if (myString.length() > 1) {
+                    return STRING;
+                } else {
+                    return CHAR;
+                }
+            }
+        }
     }
 
     // TODO: Raz

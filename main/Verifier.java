@@ -106,7 +106,7 @@ public class Verifier {
      * @param expression
      * @return true if expression is of type "type"
      */
-    public boolean verifyType(String expression, String type){
+    public boolean checkType(String expression, String type){
         String expType = getExpressionType(expression);
         switch (type) {
             case STRING:
@@ -199,7 +199,7 @@ public class Verifier {
             String varName = match.group(3);
             String varValue = match.group(4);
             // check if value matches type
-            if (varValue != null && !verifyType(varValue, varType))
+            if (varValue != null && !checkType(varValue, varType))
                 throwVerifierException("Variable type doesn't match value type");
             // adds variable to SymbolTable
             symbolTable.addVariable(varName, varType, varFinal != null);
@@ -249,7 +249,7 @@ public class Verifier {
                 throwVerifierException("Variable " + varName + " is not defined");
             }
             // check if type of varValue is the same type as variable
-            if (!verifyType(varValue, var.getType())) {
+            if (!checkType(varValue, var.getType())) {
                 throwVerifierException("Variable type doesn't match value type");
             }
             // check if not final
@@ -294,7 +294,7 @@ public class Verifier {
         if (params.size() != vars.length) { return false;}; // check if number of params of the method are equal to the vars
         int i = 0;
         for (Variable param: params) {
-            if (!verifyType(vars[i++], param.getType())){
+            if (!checkType(vars[i++], param.getType())){
                 return false; //check if arguments fit function paramters
             }
         }

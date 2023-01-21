@@ -2,8 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="26124f8e-6433-41e3-8929-93da4cb4cfa7" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/main/SJavaException.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/SjavacTest.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main/SharedUtilis.java" beforeDir="false" afterPath="$PROJECT_DIR$/main/SharedUtilis.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ex6.iml" beforeDir="false" afterPath="$PROJECT_DIR$/ex6.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main/Sjavac.java" beforeDir="false" afterPath="$PROJECT_DIR$/main/Sjavac.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main/SymbolTable.java" beforeDir="false" afterPath="$PROJECT_DIR$/main/SymbolTable.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main/Verifier.java" beforeDir="false" afterPath="$PROJECT_DIR$/main/Verifier.java" afterDir="false" />
@@ -18,6 +20,7 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="Class" />
+        <option value="JUnit5 Test Class" />
       </list>
     </option>
   </component>
@@ -35,29 +38,45 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;ASKED_ADD_EXTERNAL_FILES&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;jdk.selected.JAVA_MODULE&quot;: &quot;corretto-11&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/Raz_Z/Documents/Studies/OOP/Exs/ex6/supplied_material/tests&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.15234375&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;editor.preferences.fonts.default&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ASKED_ADD_EXTERNAL_FILES": "true",
+    "Downloaded.Files.Path.Enabled": "false",
+    "Repository.Attach.Annotations": "false",
+    "Repository.Attach.JavaDocs": "false",
+    "Repository.Attach.Sources": "false",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrary": "JUnit5",
+    "com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrarySuperClass.JUnit5": "",
+    "create.test.in.the.same.root": "true",
+    "jdk.selected.JAVA_MODULE": "corretto-11",
+    "last_opened_file_path": "C:/Users/Raz_Z/Documents/Studies/OOP/Exs/ex6/supplied_material/tests",
+    "project.structure.last.edited": "Modules",
+    "project.structure.proportion": "0.15234375",
+    "project.structure.side.proportion": "0.2",
+    "settings.editor.selected.configurable": "editor.preferences.fonts.default"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\Raz_Z\Documents\Studies\OOP\Exs\ex6\supplied_material\tests" />
     </key>
+    <key name="CreateTestDialog.Recents.Supers">
+      <recent name="" />
+    </key>
+    <key name="CreateTestDialog.RecentsKey">
+      <recent name="tests" />
+      <recent name="test" />
+      <recent name="main" />
+    </key>
   </component>
-  <component name="RunManager">
+  <component name="RunManager" selected="JUnit.SjavacTest.main">
     <configuration name="Sjavac" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="main.Sjavac" />
       <module name="ex6" />
+      <option name="PROGRAM_PARAMETERS" value="&quot;supplied_material\tests\test502.sjava&quot;" />
       <extension name="coverage">
         <pattern>
           <option name="PATTERN" value="main.entities.*" />
@@ -68,8 +87,29 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="SjavacTest.main" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="ex6" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="tests.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="tests" />
+      <option name="MAIN_CLASS_NAME" value="tests.SjavacTest" />
+      <option name="METHOD_NAME" value="main" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <list>
+      <item itemvalue="Application.Sjavac" />
+      <item itemvalue="JUnit.SjavacTest.main" />
+    </list>
     <recent_temporary>
       <list>
+        <item itemvalue="JUnit.SjavacTest.main" />
         <item itemvalue="Application.Sjavac" />
       </list>
     </recent_temporary>
@@ -98,6 +138,17 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/main/Verifier.java</url>
+          <line>463</line>
+          <option name="timeStamp" value="13" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

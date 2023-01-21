@@ -2,6 +2,7 @@ package main.entities;
 
 public class Variable {
     private boolean init;
+    private boolean globalInit;
     private String name;
     private String type;
     private final boolean varFinal;
@@ -11,6 +12,7 @@ public class Variable {
         this.type = type;
         this.varFinal = varFinal;
         this.init = false;
+        this.globalInit = false;
     }
 
     public String getName() {
@@ -35,5 +37,13 @@ public class Variable {
     }
     public boolean isInit() {
         return init;
+    }
+
+    public void resetInit() {
+        init = globalInit;
+    }
+
+    public void setGlobalInit(boolean init) {
+        globalInit = init;
     }
 }

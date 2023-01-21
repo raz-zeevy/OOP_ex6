@@ -48,7 +48,7 @@ public class SymbolTable {
      */
     public boolean inLocalScope(String name) {
         if (localSymbolTables.isEmpty()) {
-            return false;
+            return getVariable(name) != null;
         }
         variableMap localSymbolTable = localSymbolTables.getLast();
         return localSymbolTable.containsKey(name);
@@ -59,6 +59,9 @@ public class SymbolTable {
             localSymbolTables.getLast().put(varName, new Variable(varName, varType, varFinal));
         else
             globalSymbolTable.put(varName, new Variable(varName, varType, varFinal));
+    }
+    public void addVariable(Variable var) {
+        addVariable(var.getName(), var.getType(), var.isFinal());
     }
 
     public void addMethod(String methodName, ParamsContainer parameters) {
@@ -111,6 +114,24 @@ public class SymbolTable {
         System.out.println("Method Symbol Table:");
         for (Method method : methodSymbolTable.values()) {
             System.out.println(method);
+        }
+    }
+
+    public void addMethodLocals(String methodName) {
+        for (Variable var : getMethodParams(methodName)){
+            addVariable(var);
+            initVariable(var.getName());
+        }
+    }
+
+    public void resetGlobalInit() {
+        for (Variable variable : globalSymbolTable.values()) {
+            variable.resetInit();
+        }
+    }
+    public void setGlobalInit(){
+        for (Variable var : globalSymbolTable.values()){
+            var.setGlobalInit(var.isInit());
         }
     }
 }

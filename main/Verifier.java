@@ -238,7 +238,7 @@ public class Verifier {
 
     //TODO: Omri
     private boolean verifyAssignment() {
-        Pattern pattern = Pattern.compile("\\s*([a-zA-z]\\w*)\\s*=\\s*(\"?[a-zA-Z]\\w*\"?|-?\\d*.?\\d+);?");
+        Pattern pattern = Pattern.compile("\\s*([a-zA-z]\\w*)\\s*=\\s*(\"?[a-zA-Z]\\w*\"?|\".*\"|-?\\d*.?\\d+);?");
         Matcher match = pattern.matcher(line);
         if (match.matches()) {
             String varName = match.group(1);

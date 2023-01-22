@@ -102,22 +102,22 @@ public class SymbolTable {
         }
     }
 
-    public void printSymbolTable() {
-        System.out.println("Global Symbol Table:");
-        for (Variable variable : globalSymbolTable.values()) {
-            System.out.println(variable);
-        }
-        System.out.println("Local Symbol Table:");
-        for (variableMap localSymbolTable : localSymbolTables) {
-            for (Variable variable : localSymbolTable.values()) {
-                System.out.println(variable);
-            }
-        }
-        System.out.println("Method Symbol Table:");
-        for (Method method : methodSymbolTable.values()) {
-            System.out.println(method);
-        }
-    }
+//    public void printSymbolTable() {
+//        System.out.println("Global Symbol Table:");
+//        for (Variable variable : globalSymbolTable.values()) {
+//            System.out.println(variable);
+//        }
+//        System.out.println("Local Symbol Table:");
+//        for (variableMap localSymbolTable : localSymbolTables) {
+//            for (Variable variable : localSymbolTable.values()) {
+//                System.out.println(variable);
+//            }
+//        }
+//        System.out.println("Method Symbol Table:");
+//        for (Method method : methodSymbolTable.values()) {
+//            System.out.println(method);
+//        }
+//    }
 
     public void addMethodLocals(String methodName) {
         for (Variable var : getMethodParams(methodName)){

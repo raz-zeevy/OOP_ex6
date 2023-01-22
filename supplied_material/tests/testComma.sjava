@@ -5,20 +5,29 @@ final int a = 5;
 final int b = a;
 
 // now - a string member
-String s;
+String s = "ds";
 char co;
 int g;
 String x = "woo,woo";
 void boo(int a, int b, String s) {
     if (true) {
 		boo(1,2,"hello");
-		while (false) {
+		while (false || a) {
+//while (false) {
+
 			soo(true);
 //			a = 7;
             g    =5;
 			s = "hello";
 			s = "cherry,date";
 			co = ',';
+			if (4 || a){
+			    if (3.2){
+			    if (a){
+			    a = 4;
+			    }
+			    }
+			}
 		}
 	}
 	return;

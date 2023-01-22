@@ -35,9 +35,9 @@ public class Verifier {
         scope = 0;
     }
 
-    public void printSymbolTable() {
-        symbolTable.printSymbolTable();
-    }
+//    public void printSymbolTable() {
+//        symbolTable.printSymbolTable();
+//    }
 
     public void initReader(BufferedReader reader) {
         this.lineNumber = 0;
@@ -162,7 +162,7 @@ public class Verifier {
      * Only void methods are supported.
      */
     private boolean verifyMethod() {
-        Pattern pattern = Pattern.compile("void\\s+([a-zA-Z]\\w*)\\s*\\((.*)\\)\\s*\\{");
+        Pattern pattern = Pattern.compile("\\s*void\\s+([a-zA-Z]\\w*)\\s*\\((.*)\\)\\s*\\{");
         Matcher match = pattern.matcher(line);
         if (match.matches()) {
             String methodName = match.group(1);
@@ -205,8 +205,8 @@ public class Verifier {
      */
     private boolean verifyVarDec() {
         String varsTypesRx = String.join("|", variableTypes);
-        Pattern pattern = Pattern.compile("\\s*(final\\s)?("+ varsTypesRx +")\\s+((([a-zA-Z]\\w*)" +
-                "\\s*(?:;|=\\s*(\\S*"+r_OR_ANY_STRING_CHAR+"))?)(\\s*,\\s*[^;]+)?)+;");
+        Pattern pattern = Pattern.compile("\\s*(final\\s*)?\\s*("+ varsTypesRx +")\\s+((([a-zA-Z]\\w*)" +
+                "\\s*(?:;|=\\s*(\\S*"+r_OR_ANY_STRING_CHAR+"\\s*)\\s*)?)(\\s*,\\s*[^;]+)?)+;");
         Matcher match = pattern.matcher(line);
         if (match.matches()) {
             // firstReadMode validation
@@ -336,8 +336,13 @@ public class Verifier {
         return match.matches();
     }
 
-    private boolean checkMethodsCallParams(String methodName, String MethodArgs){
-        String[] vars =  MethodArgs.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)");
+    private boolean checkMethodsCallParams(String methodName, String methodArgs){
+
+        if (methodArgs == null){
+            return symbolTable.getMethodParams(methodName).size() == 0;
+        }
+        String[] vars = methodArgs.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)");
+
         ParamsContainer params =  symbolTable.getMethodParams(methodName);
         if (params.size() != vars.length) { return false;}; // check if number of params of the method are equal to the vars
         int i = 0;
@@ -392,7 +397,7 @@ public class Verifier {
     // TODO: Raz
     private boolean verifyParameterList(String params) {
         String varsTypesRx = String.join("|", variableTypes);
-        String regPattern = "(\\s*(final\\s)?(" + varsTypesRx + ")\\s+([a-zA-Z]\\w*)\\s*[,]?)*";
+        String regPattern = "(\\s*(final\\s)?(" + varsTypesRx + ")\\s+([a-zA-Z]\\w*)\\s*[,]?)*|\\s*";
         Pattern pattern = Pattern.compile(regPattern);
         Matcher match = pattern.matcher(params);
         return match.matches();
@@ -456,13 +461,27 @@ public class Verifier {
      * eg: "if (3) {"
      * eg: "if (isFantastic && -3.25 || true) {"
      */
-    private boolean verifyCondition(String condition) {
-        String boolTypesRx = String.join("|", conditionables);
-        Pattern pattern = Pattern.compile("((([a-zA-Z]\\w*)|(-?\\d*.?\\d+))\\s*(\\|\\||&&)\\s)+");
-        Matcher match = pattern.matcher(line);
-        // TODO: raise Exception when condition is not valid
-        // TODO: check types of variables with symboltable
-        return match.matches();
+    private boolean verifyCondition(String TheCondition) {
+        for (String condition : TheCondition.split("\\|\\||&&(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)" +
+                "(?=(?:[^']*'[^']*')*[^']*$)", -1)) {
+            condition = condition.trim();
+            Pattern pattern = Pattern.compile("(\\s*([a-zA-Z]\\w*)|(-?\\d*.?\\d+)|(\\|\\||&&)\\s*)");
+            Matcher match = pattern.matcher(condition);
+            if (match.find()) {
+                String type = getExpressionType(condition);
+                if (type.equals(INT) || type.equals(DOUBLE)) {
+                    if (symbolTable.getVariable(condition) == null) {
+                        throwVerifierException("illegal condition");
+                    }
+                }
+                if (type.equals(STRING) || type.equals(CHAR) || type.equals(STRING_LITERAL)){throwVerifierException("illegal condition");}
+            }
+
+            // TODO: raise Exception when condition is not valid
+            // TODO: check types of variables with symboltable
+            if (!match.matches()){throwVerifierException("illegal condition");}
+        }
+        return true;
     }
 
     //TODO: Omri

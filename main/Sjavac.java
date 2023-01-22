@@ -10,7 +10,7 @@ public class Sjavac {
         try (BufferedReader reader =
                              new BufferedReader(new FileReader(file));){
             verifier.firstRead(reader);
-            verifier.printSymbolTable();
+//            verifier.printSymbolTable();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

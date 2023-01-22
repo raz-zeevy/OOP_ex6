@@ -1,4 +1,4 @@
-package tests;
+package tester_files.tests;
 import main.Sjavac;
 import org.junit.jupiter.api.Test;
 import java.io.File;

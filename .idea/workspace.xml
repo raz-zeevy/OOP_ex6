@@ -2,15 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="26124f8e-6433-41e3-8929-93da4cb4cfa7" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/main/entities/GlobalVariable.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main/Sjavac.java" beforeDir="false" afterPath="$PROJECT_DIR$/main/Sjavac.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main/SymbolTable.java" beforeDir="false" afterPath="$PROJECT_DIR$/main/SymbolTable.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main/Verifier.java" beforeDir="false" afterPath="$PROJECT_DIR$/main/Verifier.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main/entities/Variable.java" beforeDir="false" afterPath="$PROJECT_DIR$/main/entities/Variable.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/supplied_material/presubmission_sjavac_tests.txt" beforeDir="false" afterPath="$PROJECT_DIR$/supplied_material/presubmission_sjavac_tests.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/supplied_material/tests/test502.sjava" beforeDir="false" afterPath="$PROJECT_DIR$/supplied_material/tests/test502.sjava" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/SjavacTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/tests/SjavacTest.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

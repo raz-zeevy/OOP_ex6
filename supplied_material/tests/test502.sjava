@@ -14,7 +14,6 @@ void boo(int a, int b, String s) {
 			soo(true);
 		}
 	}
-	return;
 }
 
 s = '3';

@@ -19,3 +19,4 @@ test452.sjava 1 extra parentheses error
 test474.sjava 1 2 methods with the same name
 test501.sjava 0 complex test 1
 test502.sjava 0 Raz's Test
+notExist.sjava 2 Raz's Test

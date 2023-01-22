@@ -14,14 +14,18 @@ import static main.SharedUtilis.*;
 
 /**
  * TODOS
- // TODO : change the split in assignments and decleration to exclude "," when in "" / OMRI
+ // TODO : change the split in assignments and decleration to exclude "," when in "" or '' / OMRI
  */
 public class Verifier {
 
+    public static final int GLOBAL_SCOPE_INDEX = 0;
+    public static final String CHAR_LITERAL = "charLiteral";
+    public static final String r_OR_ANY_STRING_CHAR = "|\".*\"|\'.*\'|";
+    public static final String r_SPLIT_BY_COMMA = "\\s*,\\s*";
     private final SymbolTable symbolTable;
-    private int scope;
     private BufferedReader reader;
     private String line;
+    private int scope;
     private boolean firstReadMode = false;
     private int lineNumber;
     private boolean hasReturned;
@@ -37,6 +41,7 @@ public class Verifier {
 
     public void initReader(BufferedReader reader) {
         this.lineNumber = 0;
+        this.scope = 0;
         this.reader = reader;
         nextLine();
     }
@@ -44,19 +49,18 @@ public class Verifier {
     public void verify(BufferedReader reader) {
         initReader(reader);
         for (; line != null; nextLine()) {
-            if (!(verifyVarDec() || verifyMethod())){
+            if (!(verifyVarDec() || verifyMethod() || verifyAssignment())){
                     throwVerifierException("Invalid method declaration");
             }
         }
     }
 
-    //TODO: Raz
     public void firstRead(BufferedReader reader) {
         initReader(reader);
         firstReadMode = true;
         for (; line != null; nextLine()) {
             verifyMethod();
-            if (scope == 0) {
+            if (scope == GLOBAL_SCOPE_INDEX) {
                 verifyVarDec();
                 verifyAssignment();
             }
@@ -65,7 +69,6 @@ public class Verifier {
         firstReadMode = false;
     }
 
-    //TODO: Raz
     public void nextLine() {
         try {
             line = reader.readLine();
@@ -112,7 +115,7 @@ public class Verifier {
     /**
      * this method verifies that type(var) = type(expression)
      * casts according to the following:
-     * string <- string, string literal
+     * string <- string, string literal String a = "asd", String a = stringVar
      * int <- int, int literal
      * double <- int, int literal, double, double literal
      * boolean <- int, int literal, double, double literal, boolean, boolean literal
@@ -134,6 +137,9 @@ public class Verifier {
                 return expType.equals(INT_LITERAL) || expType.equals(DOUBLE_LITERAL)
                         || expType.equals(BOOLEAN_LITERAL) || expType.equals(BOOLEAN)
                         || expType.equals(INT) || expType.equals(DOUBLE);
+
+            case CHAR:
+                return expType.equals(CHAR) || expType.equals(CHAR_LITERAL);
             default:
                 return expType.equals(type);
         }
@@ -200,7 +206,7 @@ public class Verifier {
     private boolean verifyVarDec() {
         String varsTypesRx = String.join("|", variableTypes);
         Pattern pattern = Pattern.compile("\\s*(final\\s)?("+ varsTypesRx +")\\s+((([a-zA-Z]\\w*)" +
-                "\\s*(?:;|=\\s*(\\S*))?)(\\s*,\\s*[^;]+)?)+;");
+                "\\s*(?:;|=\\s*(\\S*"+r_OR_ANY_STRING_CHAR+"))?)(\\s*,\\s*[^;]+)?)+;");
         Matcher match = pattern.matcher(line);
         if (match.matches()) {
             // firstReadMode validation
@@ -209,8 +215,9 @@ public class Verifier {
             }
             String varFinal = match.group(1);
             String varType = match.group(2);
-            for (String dec : match.group(3).split("\\s*,\\s*")){
-                Pattern varPattern = Pattern.compile("\\s*([a-zA-Z]\\w*)\\s*(=\\s*([\\S^;]+))?\\s*;?");
+            for (String dec : match.group(3).split(r_SPLIT_BY_COMMA)){
+                Pattern varPattern = Pattern.compile("\\s*([a-zA-Z]\\w*)\\s*(=\\s*([\\S^;]+|\".*\"|))" +
+                        "?\\s*;?");
                 Matcher varMatch = varPattern.matcher(dec);
                 // needed in order for the groups to be calculated
                 if (!varMatch.matches()){
@@ -267,8 +274,8 @@ public class Verifier {
 
     //TODO: Omri
     private boolean verifyAssignment() {
-        for (String assignment : line.split("\\s*,\\s*")) {
-            Pattern pattern = Pattern.compile("\\s*([a-zA-z]\\w*)\\s*=\\s*(\\S*[^;]);?");
+        for (String assignment : line.split(r_SPLIT_BY_COMMA)) {
+            Pattern pattern = Pattern.compile("\\s*([a-zA-z]\\w*)\\s*=\\s*([\\S*^;]"+r_OR_ANY_STRING_CHAR+");?");
             Matcher match = pattern.matcher(assignment);
             if (match.matches()) {
                 // verify InnerScope
@@ -345,14 +352,14 @@ public class Verifier {
      */
     public String getExpressionType(String expression) {
         //TODO check if empty char is valid
-        Pattern charPattern = Pattern.compile("'.?'");
+        Pattern charLiteralPattern = Pattern.compile("'.?'");
         Pattern stringLiteralPattern = Pattern.compile("\".*\"");
         Pattern intLiteralPattern = Pattern.compile("(-|\\+)?\\d+");
         Pattern doubleLiteralPattern = Pattern.compile("(-|\\+)?((\\d*.?\\d+)|(\\d+.?\\d*))");
         Pattern boolLiteralPattern = Pattern.compile("true|false");
         Pattern varPattern = Pattern.compile("[a-zA-Z]\\w*");
-        if (charPattern.matcher(expression).matches()) {
-            return CHAR;
+        if (charLiteralPattern.matcher(expression).matches()) {
+            return CHAR_LITERAL;
         } else if (stringLiteralPattern.matcher(expression).matches()) {
             return STRING_LITERAL;
         } else if (intLiteralPattern.matcher(expression).matches()) {

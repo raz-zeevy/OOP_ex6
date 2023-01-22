@@ -5,10 +5,10 @@ final int a = 5;
 final int b = a;
 
 // now - a string member
-String s = "cherry";
+char s;
 
 void boo(int a, int b, String s) {
-	if (true) {
+	if (banana) {
 		boo(1,2,"hello");
 		while (false) {
 			soo(true);
@@ -16,6 +16,8 @@ void boo(int a, int b, String s) {
 	}
 	return;
 }
+
+s = '3';
 
 void soo(boolean b) {
 	return;

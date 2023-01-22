@@ -6,7 +6,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
 import static org.junit.Assert.*;
-import oop.ex6.main.Sjavac;
+import main.Sjavac;
 
 @RunWith(Parameterized.class)
 public class Ex7Tester {

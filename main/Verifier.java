@@ -215,7 +215,9 @@ public class Verifier {
             }
             String varFinal = match.group(1);
             String varType = match.group(2);
-            for (String dec : match.group(3).split(r_SPLIT_BY_COMMA)){
+
+            for (String dec : match.group(3).split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)(?=(?:[^']*'[^']*')*[^']*$)", -1)){
+//            for (String dec : match.group(3).split(r_SPLIT_BY_COMMA)){
                 Pattern varPattern = Pattern.compile("\\s*([a-zA-Z]\\w*)\\s*(=\\s*([\\S^;]+|\".*\"|))" +
                         "?\\s*;?");
                 Matcher varMatch = varPattern.matcher(dec);
@@ -274,8 +276,11 @@ public class Verifier {
 
     //TODO: Omri
     private boolean verifyAssignment() {
-        for (String assignment : line.split(r_SPLIT_BY_COMMA)) {
-            Pattern pattern = Pattern.compile("\\s*([a-zA-z]\\w*)\\s*=\\s*([\\S*^;]"+r_OR_ANY_STRING_CHAR+");?");
+
+//        for (String assignment : line.split(r_SPLIT_BY_COMMA)) {
+        for (String assignment : line.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)(?=(?:[^']*'[^']*')*[^']*$)", -1)) {
+//            Pattern pattern = Pattern.compile("\\s*([a-zA-z]\\w*)\\s*=\\s*(\".*\")\\s*;");
+            Pattern pattern = Pattern.compile("\\s*([a-zA-z]\\w*)\\s*=\\s*([\\S*^]"+r_OR_ANY_STRING_CHAR+");?");
             Matcher match = pattern.matcher(assignment);
             if (match.matches()) {
                 // verify InnerScope

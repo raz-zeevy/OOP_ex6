@@ -1,4 +1,5 @@
 package main;
+import main.entities.GlobalVariable;
 import main.entities.Method;
 import main.entities.ParamsContainer;
 import main.entities.Variable;
@@ -10,16 +11,17 @@ import java.util.LinkedList;
  * <variable name, variable type>
  */
 class variableMap extends HashMap<String, Variable> {} // dict: <variable name> -> <Variable>
+class globalVariableMap extends HashMap<String, GlobalVariable> {} // dict: <variable name> -> <Variable>
 class methodMap extends HashMap<String, Method> {} // dict: <method name> -> <Method>
 
 // TODO: adjust the symbol table to contain the information of final
 public class SymbolTable {
-    private final variableMap globalSymbolTable;
+    private final globalVariableMap globalSymbolTable;
     private final LinkedList<variableMap> localSymbolTables;
     private final methodMap methodSymbolTable;
 
     public SymbolTable() {
-        globalSymbolTable = new variableMap();
+        globalSymbolTable = new globalVariableMap();
         localSymbolTables = new LinkedList<>();
         methodSymbolTable = new methodMap();
     }
@@ -48,7 +50,7 @@ public class SymbolTable {
      */
     public boolean inLocalScope(String name) {
         if (localSymbolTables.isEmpty()) {
-            return false;
+            return getVariable(name) != null;
         }
         variableMap localSymbolTable = localSymbolTables.getLast();
         return localSymbolTable.containsKey(name);
@@ -58,7 +60,10 @@ public class SymbolTable {
         if (localSymbolTables.size() != 0)
             localSymbolTables.getLast().put(varName, new Variable(varName, varType, varFinal));
         else
-            globalSymbolTable.put(varName, new Variable(varName, varType, varFinal));
+            globalSymbolTable.put(varName, new GlobalVariable(varName, varType, varFinal));
+    }
+    public void addVariable(Variable var) {
+        addVariable(var.getName(), var.getType(), var.isFinal());
     }
 
     public void addMethod(String methodName, ParamsContainer parameters) {
@@ -111,6 +116,24 @@ public class SymbolTable {
         System.out.println("Method Symbol Table:");
         for (Method method : methodSymbolTable.values()) {
             System.out.println(method);
+        }
+    }
+
+    public void addMethodLocals(String methodName) {
+        for (Variable var : getMethodParams(methodName)){
+            addVariable(var);
+            initVariable(var.getName());
+        }
+    }
+
+    public void resetGlobalInit() {
+        for (GlobalVariable variable : globalSymbolTable.values()) {
+            variable.resetInit();
+        }
+    }
+    public void setGlobalInit(){
+        for (GlobalVariable var : globalSymbolTable.values()){
+            var.setGlobalInit(var.isInit());
         }
     }
 }

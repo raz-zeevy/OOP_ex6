@@ -1,7 +1,7 @@
 package main.entities;
 
 public class Variable {
-    private boolean init;
+    protected boolean init;
     private String name;
     private String type;
     private final boolean varFinal;
@@ -36,4 +36,6 @@ public class Variable {
     public boolean isInit() {
         return init;
     }
+
+
 }

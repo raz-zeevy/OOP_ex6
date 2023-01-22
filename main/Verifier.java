@@ -1,34 +1,38 @@
 package main;
+
 import main.entities.ParamsContainer;
 import main.entities.Variable;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 import static main.SharedUtilis.*;
 
 
-/**
- 1. Verify entire code
- 2. if no exceptions were thrown, return 0
- 3. else, return 1 and print the exception msg
-/**
 
 /**
  * TODOS
- * add function to check types (a == b etc') TODO: Raz
+ // TODO : change the split in assignments and decleration to exclude "," when in "" or '' / OMRI
  */
 public class Verifier {
 
+    public static final int GLOBAL_SCOPE_INDEX = 0;
+    public static final String CHAR_LITERAL = "charLiteral";
+    public static final String r_OR_ANY_STRING_CHAR = "|\".*\"|\'.*\'|";
+    public static final String r_SPLIT_BY_COMMA = "\\s*,\\s*";
     private final SymbolTable symbolTable;
     private BufferedReader reader;
     private String line;
-    private boolean methodReadMode = false;
+    private int scope;
+    private boolean firstReadMode = false;
     private int lineNumber;
     private boolean hasReturned;
 
     public Verifier() {
         symbolTable = new SymbolTable();
+        scope = 0;
     }
 
     public void printSymbolTable() {
@@ -37,29 +41,34 @@ public class Verifier {
 
     public void initReader(BufferedReader reader) {
         this.lineNumber = 0;
+        this.scope = 0;
         this.reader = reader;
         nextLine();
     }
 
     public void verify(BufferedReader reader) {
         initReader(reader);
-        verifyGlobalVarDec();
         for (; line != null; nextLine()) {
-            verifyMethod();
+            if (!(verifyVarDec() || verifyMethod() || verifyAssignment())){
+                    throwVerifierException("Invalid method declaration");
+            }
         }
     }
 
-    //TODO: Raz
-    public void getMethods(BufferedReader reader) {
+    public void firstRead(BufferedReader reader) {
         initReader(reader);
-        methodReadMode = true;
+        firstReadMode = true;
         for (; line != null; nextLine()) {
             verifyMethod();
+            if (scope == GLOBAL_SCOPE_INDEX) {
+                verifyVarDec();
+                verifyAssignment();
+            }
         }
-        methodReadMode = false;
+        symbolTable.setGlobalInit();
+        firstReadMode = false;
     }
 
-    //TODO: Raz
     public void nextLine() {
         try {
             line = reader.readLine();
@@ -81,6 +90,14 @@ public class Verifier {
         if (!endOfLinePattern.matcher(line).matches()){
             throwVerifierException("error: ';' expected");
         }
+        Pattern openScopePattern = Pattern.compile(".*([{]\\s*)$");
+        Pattern closeScopePattern = Pattern.compile(".*([}]\\s*)$");
+        if (openScopePattern.matcher(line).matches()){
+            scope++;
+        }
+        if (closeScopePattern.matcher(line).matches()){
+            scope--;
+        }
     }
 
     private void verifyEndBlock() {
@@ -98,7 +115,7 @@ public class Verifier {
     /**
      * this method verifies that type(var) = type(expression)
      * casts according to the following:
-     * string <- string, string literal
+     * string <- string, string literal String a = "asd", String a = stringVar
      * int <- int, int literal
      * double <- int, int literal, double, double literal
      * boolean <- int, int literal, double, double literal, boolean, boolean literal
@@ -120,6 +137,9 @@ public class Verifier {
                 return expType.equals(INT_LITERAL) || expType.equals(DOUBLE_LITERAL)
                         || expType.equals(BOOLEAN_LITERAL) || expType.equals(BOOLEAN)
                         || expType.equals(INT) || expType.equals(DOUBLE);
+
+            case CHAR:
+                return expType.equals(CHAR) || expType.equals(CHAR_LITERAL);
             default:
                 return expType.equals(type);
         }
@@ -141,7 +161,7 @@ public class Verifier {
      * *******************
      * Only void methods are supported.
      */
-    private void verifyMethod() {
+    private boolean verifyMethod() {
         Pattern pattern = Pattern.compile("void\\s+([a-zA-Z]\\w*)\\s*\\((.*)\\)\\s*\\{");
         Matcher match = pattern.matcher(line);
         if (match.matches()) {
@@ -150,20 +170,21 @@ public class Verifier {
             if (!verifyParameterList(methodParams)) {
                 throwVerifierException("Invalid method parameters");
             }
-            if (methodReadMode) {
+            if (firstReadMode) {
                 ParamsContainer params = getParameters(methodParams);
                 symbolTable.addMethod(methodName, params);
             } else {
                 symbolTable.addLocalSymbolTable();
+                symbolTable.addMethodLocals(methodName);
                 nextLine();
                 verifyMethodBody();
                 if (!hasReturned)
                     throwVerifierException("Method must end with a return statement");
                 verifyEndBlock();
+                symbolTable.resetGlobalInit();
             }
-        } else if (!methodReadMode) {
-            throwVerifierException("Invalid method declaration");
         }
+        return match.matches();
     }
 
     /**
@@ -176,36 +197,51 @@ public class Verifier {
         }
     }
 
-    private void verifyGlobalVarDec() {
-        while (verifyVarDec()) {
-            nextLine();
-        }
-    }
-
     //TODO: Raz
     /**
-     * eg: "int a = 5;"
+     * eg: "int a = 5, b = 3, c;"
      * Variable declaration lines
      * check variable naming conventions in sJava
      */
     private boolean verifyVarDec() {
         String varsTypesRx = String.join("|", variableTypes);
-        Pattern pattern = Pattern.compile("\\s*(final\\s)?(" + varsTypesRx + ")\\s+([a-zA-Z]\\w*)\\s*(?:;" +
-                "|=\\s*(\\S*);)?");
+        Pattern pattern = Pattern.compile("\\s*(final\\s)?("+ varsTypesRx +")\\s+((([a-zA-Z]\\w*)" +
+                "\\s*(?:;|=\\s*(\\S*"+r_OR_ANY_STRING_CHAR+"))?)(\\s*,\\s*[^;]+)?)+;");
         Matcher match = pattern.matcher(line);
         if (match.matches()) {
+            // firstReadMode validation
+            if (!firstReadMode && scope == 0){
+                return true;
+            }
             String varFinal = match.group(1);
             String varType = match.group(2);
-            String varName = match.group(3);
-            String varValue = match.group(4);
-            // check if value matches type
-            if (varValue != null && !checkType(varValue, varType))
-                throwVerifierException("Variable type doesn't match value type");
-            // adds variable to SymbolTable
-            symbolTable.addVariable(varName, varType, varFinal != null);
-            if (varValue != null) {
-                symbolTable.initVariable(varName);
+            for (String dec : match.group(3).split(r_SPLIT_BY_COMMA)){
+                Pattern varPattern = Pattern.compile("\\s*([a-zA-Z]\\w*)\\s*(=\\s*([\\S^;]+|\".*\"|))" +
+                        "?\\s*;?");
+                Matcher varMatch = varPattern.matcher(dec);
+                // needed in order for the groups to be calculated
+                if (!varMatch.matches()){
+                    throwVerifierException("invalid variable declaration");
+                }
+                String varName = varMatch.group(1);
+                String varValue = varMatch.group(3);
+                // check if variable wasn't declared in the scope yet:
+                if (symbolTable.inLocalScope(varName)) {
+                    throwVerifierException("Variable " + varName + " already declared in this scope");
+                }
+                // check if final and has value
+                if (varValue == null && varFinal != null)
+                    throwVerifierException("Final variable must be declared with a value");
+                // check if value matches type
+                if (varValue != null && !checkType(varValue, varType))
+                    throwVerifierException("Variable type doesn't match value type");
+                // adds variable to SymbolTable
+                symbolTable.addVariable(varName, varType, varFinal != null);
+                if (varValue != null) {
+                    symbolTable.initVariable(varName);
+                }
             }
+
         }
         return match.matches();
     }
@@ -238,28 +274,35 @@ public class Verifier {
 
     //TODO: Omri
     private boolean verifyAssignment() {
-        Pattern pattern = Pattern.compile("\\s*([a-zA-z]\\w*)\\s*=\\s*(\"?[a-zA-Z]\\w*\"?|\".*\"|-?\\d*.?\\d+);?");
-        Matcher match = pattern.matcher(line);
-        if (match.matches()) {
-            String varName = match.group(1);
-            String varValue = match.group(2);
-            // check if exist in symbolTable
-            Variable var = symbolTable.getVariable(varName);
-            if (var == null) {
-                throwVerifierException("Variable " + varName + " is not defined");
+        for (String assignment : line.split(r_SPLIT_BY_COMMA)) {
+            Pattern pattern = Pattern.compile("\\s*([a-zA-z]\\w*)\\s*=\\s*([\\S*^;]"+r_OR_ANY_STRING_CHAR+");?");
+            Matcher match = pattern.matcher(assignment);
+            if (match.matches()) {
+                // verify InnerScope
+                if (!firstReadMode && scope == 0){
+                    return true;
+                }
+                String varName = match.group(1);
+                String varValue = match.group(2);
+                // check if exist in symbolTable
+                Variable var = symbolTable.getVariable(varName);
+                if (var == null) {
+                    throwVerifierException("Variable " + varName + " is not defined");
+                }
+                // check if type of varValue is the same type as variable
+                if (!checkType(varValue, var.getType())) {
+                    throwVerifierException("Variable type doesn't match value type");
+                }
+                // check if not final
+                if (var.isInit() && var.isFinal()) {
+                    throwVerifierException("Cannot assign value to final variable");
+                }
+                if (!var.isInit())
+                    symbolTable.initVariable(varName);
             }
-            // check if type of varValue is the same type as variable
-            if (!checkType(varValue, var.getType())) {
-                throwVerifierException("Variable type doesn't match value type");
-            }
-            // check if not final
-            if (var.isInit() && var.isFinal()) {
-                throwVerifierException("Cannot assign value to final variable");
-            }
-            if (!var.isInit())
-                symbolTable.initVariable(varName);
+            else {return false;}
         }
-        return match.matches();
+        return true;
     }
 
     //TODO: Omri
@@ -272,7 +315,7 @@ public class Verifier {
     private boolean verifyCallingMethod() {
         Pattern pattern = Pattern.compile("\\s*([a-zA-Z]\\w*)\\s*\\((([a-zA-Z]\\w*|\".*\"|\\d+)(,\\s*" +
                 "([a-zA-Z]\\w*|\".*\"|\\d+))*)?\\);");
-        Matcher match = pattern.matcher(line);
+        Matcher match = pattern.matcher(line.replaceAll("\\s",""));
         if (match.matches()) {
             String methodName = match.group(1);
             // check if method exist in symbolTable
@@ -308,14 +351,15 @@ public class Verifier {
      * @return
      */
     public String getExpressionType(String expression) {
-        Pattern charPattern = Pattern.compile("'.'");
+        //TODO check if empty char is valid
+        Pattern charLiteralPattern = Pattern.compile("'.?'");
         Pattern stringLiteralPattern = Pattern.compile("\".*\"");
-        Pattern intLiteralPattern = Pattern.compile("-?\\d+");
-        Pattern doubleLiteralPattern = Pattern.compile("-?\\d*.?\\d+");
+        Pattern intLiteralPattern = Pattern.compile("(-|\\+)?\\d+");
+        Pattern doubleLiteralPattern = Pattern.compile("(-|\\+)?((\\d*.?\\d+)|(\\d+.?\\d*))");
         Pattern boolLiteralPattern = Pattern.compile("true|false");
         Pattern varPattern = Pattern.compile("[a-zA-Z]\\w*");
-        if (charPattern.matcher(expression).matches()) {
-            return CHAR;
+        if (charLiteralPattern.matcher(expression).matches()) {
+            return CHAR_LITERAL;
         } else if (stringLiteralPattern.matcher(expression).matches()) {
             return STRING_LITERAL;
         } else if (intLiteralPattern.matcher(expression).matches()) {
@@ -329,6 +373,9 @@ public class Verifier {
             if (var == null) {
                 throwVerifierException("Variable \"" + expression + "\" is not defined");
             } else {
+                if (!var.isInit()){
+                    throwVerifierException("Variable \"" + expression + "\" wasn't initiated");
+                }
                 return var.getType();
             }
         }
@@ -421,7 +468,7 @@ public class Verifier {
     }
 
     private void throwVerifierException(String message) {
-        throw new RuntimeException("Line " + lineNumber + ": "+message);
+        throw new SJavaException("Line " + lineNumber + ": "+message);
     }
 
 }

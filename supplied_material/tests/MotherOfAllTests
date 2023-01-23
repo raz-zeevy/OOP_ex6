@@ -1,3 +1,6 @@
-			void 					foo                   (    int a      ,      String  	 b              )               {
-return;
- 					      }
+void foo() {
+	if    (   x   )    {
+	}
+	return;
+}
+int x = 3;

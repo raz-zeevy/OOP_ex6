@@ -5,6 +5,10 @@ import main.entities.Variable;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -205,7 +209,7 @@ public class Verifier {
      */
     private boolean verifyVarDec() {
         String varsTypesRx = String.join("|", variableTypes);
-        Pattern pattern = Pattern.compile("\\s*(final\\s*)?\\s*("+ varsTypesRx +")\\s+((([a-zA-Z]\\w*)" +
+        Pattern pattern = Pattern.compile("\\s*(final\\s*)?\\s*("+ varsTypesRx +")\\s+(((_[[a-zA-Z]\\w*])|([a-zA-Z]\\w*)" +
                 "\\s*(?:;|=\\s*(\\S*"+r_OR_ANY_STRING_CHAR+"\\s*)\\s*)?)(\\s*,\\s*[^;]+)?)+;");
         Matcher match = pattern.matcher(line);
         if (match.matches()) {
@@ -400,6 +404,19 @@ public class Verifier {
         String regPattern = "(\\s*(final\\s)?(" + varsTypesRx + ")\\s+([a-zA-Z]\\w*)\\s*[,]?)*|\\s*";
         Pattern pattern = Pattern.compile(regPattern);
         Matcher match = pattern.matcher(params);
+
+
+//        HashMap<String, Variable> Args = new HashMap<String, Variable>();
+//
+//        for (String str : params.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)(?=(?:[^']*'[^']*')*[^']*$)", -1)){
+//            String[] argument =  str.trim().split(" ");
+//            Variable var = new Variable(argument[1], argument[0], false);
+//            if (Args.containsKey(argument[1]) && Args.get(argument[1]).getType().equals(argument[0])){
+//                return false;
+//            }
+//            Args.put(argument[1],var); //TODO how?!?!
+//        }
+
         return match.matches();
     }
 

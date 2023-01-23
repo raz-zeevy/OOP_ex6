@@ -4,7 +4,6 @@
     <list default="true" id="26124f8e-6433-41e3-8929-93da4cb4cfa7" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main/Verifier.java" beforeDir="false" afterPath="$PROJECT_DIR$/main/Verifier.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/supplied_material/presubmission_sjavac_tests.txt" beforeDir="false" afterPath="$PROJECT_DIR$/supplied_material/presubmission_sjavac_tests.txt" afterDir="false" />
     </list>
     <list id="3615eab5-25b9-4700-8acc-90b00853b216" name="Changes by omrib" comment="">
       <change beforePath="$PROJECT_DIR$/supplied_material/tests/MotherOfAllTests" beforeDir="false" afterPath="$PROJECT_DIR$/supplied_material/tests/MotherOfAllTests" afterDir="false" />
@@ -71,7 +70,7 @@
       <recent name="main" />
     </key>
   </component>
-  <component name="RunManager" selected="JUnit.SjavacTest (1)">
+  <component name="RunManager" selected="Application.Sjavac">
     <configuration name="Sjavac" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="main.Sjavac" />
       <module name="ex6" />
@@ -140,8 +139,8 @@
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="JUnit.SjavacTest (1)" />
         <item itemvalue="Application.Sjavac" />
+        <item itemvalue="JUnit.SjavacTest (1)" />
         <item itemvalue="JUnit.SjavacTest" />
         <item itemvalue="JUnit.SjavacTest.main" />
       </list>
@@ -178,7 +177,7 @@
         <line-breakpoint enabled="true" type="java-line">
           <condition expression="lineNumber == 3" language="JAVA" />
           <url>file://$PROJECT_DIR$/main/Verifier.java</url>
-          <line>370</line>
+          <line>372</line>
           <option name="timeStamp" value="1" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
@@ -188,7 +187,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/main/Verifier.java</url>
-          <line>216</line>
+          <line>218</line>
           <option name="timeStamp" value="4" />
         </line-breakpoint>
       </breakpoints>

@@ -215,7 +215,7 @@ public class Verifier {
         Pattern pattern2 = Pattern.compile("\\s*(final\\s*)?\\s*("+ varsTypesRx +")\\s+(((_[[a-zA-Z]\\w*])|" +
                 "([a-zA-Z]\\w*)" +
                 "\\s*(?:;|=\\s*(\\S*"+r_OR_ANY_STRING_CHAR+"\\s*)\\s*)?)(\\s*,\\s*[^;]+)?)+\\s*;\\s*");
-        Pattern pattern = Pattern.compile("\\s*(final\\s*)?\\s*("+ varsTypesRx +")\\s+(.*);");
+        Pattern pattern = Pattern.compile("\\s*(final\\s*)?\\s*("+ varsTypesRx +")\\s+(.*);\\s*");
         Matcher match = pattern.matcher(line);
         if (match.matches()) {
             // firstReadMode validation
@@ -227,7 +227,7 @@ public class Verifier {
 
             for (String dec : match.group(3).split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)(?=(?:[^']*'[^']*')*[^']*$)", -1)){
 //            for (String dec : match.group(3).split(r_SPLIT_BY_COMMA)){
-                Pattern varPattern = Pattern.compile("\\s*([a-zA-Z]\\w*)\\s*(=\\s*([\\S^;]+|\".*\"|))" +
+                Pattern varPattern = Pattern.compile("\\s*(_?[a-zA-Z]\\w*)\\s*(=\\s*([\\S^;]+|\".*\"|))" +
                         "?\\s*;?");
                 Matcher varMatch = varPattern.matcher(dec);
                 // needed in order for the groups to be calculated

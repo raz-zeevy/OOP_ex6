@@ -4,7 +4,6 @@
     <list default="true" id="26124f8e-6433-41e3-8929-93da4cb4cfa7" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main/Verifier.java" beforeDir="false" afterPath="$PROJECT_DIR$/main/Verifier.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main/entities/ParamsContainer.java" beforeDir="false" afterPath="$PROJECT_DIR$/main/entities/ParamsContainer.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/supplied_material/presubmission_sjavac_tests.txt" beforeDir="false" afterPath="$PROJECT_DIR$/supplied_material/presubmission_sjavac_tests.txt" afterDir="false" />
     </list>
     <list id="3615eab5-25b9-4700-8acc-90b00853b216" name="Changes by omrib" comment="">
@@ -181,6 +180,16 @@
           <url>file://$PROJECT_DIR$/main/Verifier.java</url>
           <line>370</line>
           <option name="timeStamp" value="1" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/main/Verifier.java</url>
+          <line>55</line>
+          <option name="timeStamp" value="3" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/main/Verifier.java</url>
+          <line>216</line>
+          <option name="timeStamp" value="4" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

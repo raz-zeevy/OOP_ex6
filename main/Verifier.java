@@ -24,7 +24,7 @@ public class Verifier {
 
     public static final int GLOBAL_SCOPE_INDEX = 0;
     public static final String CHAR_LITERAL = "charLiteral";
-    public static final String r_OR_ANY_STRING_CHAR = "|\".*\"|\'.*\'|";
+    public static final String r_OR_ANY_STRING_CHAR = "|\\\".*\\\"|\'.*\'|";
     public static final String r_SPLIT_BY_COMMA = "\\s*,\\s*";
     private final SymbolTable symbolTable;
     private BufferedReader reader;
@@ -212,8 +212,10 @@ public class Verifier {
      */
     private boolean verifyVarDec() {
         String varsTypesRx = String.join("|", variableTypes);
-        Pattern pattern = Pattern.compile("\\s*(final\\s*)?\\s*("+ varsTypesRx +")\\s+(((_[[a-zA-Z]\\w*])|([a-zA-Z]\\w*)" +
-                "\\s*(?:;|=\\s*(\\S*"+r_OR_ANY_STRING_CHAR+"\\s*)\\s*)?)(\\s*,\\s*[^;]+)?)+;");
+        Pattern pattern2 = Pattern.compile("\\s*(final\\s*)?\\s*("+ varsTypesRx +")\\s+(((_[[a-zA-Z]\\w*])|" +
+                "([a-zA-Z]\\w*)" +
+                "\\s*(?:;|=\\s*(\\S*"+r_OR_ANY_STRING_CHAR+"\\s*)\\s*)?)(\\s*,\\s*[^;]+)?)+\\s*;\\s*");
+        Pattern pattern = Pattern.compile("\\s*(final\\s*)?\\s*("+ varsTypesRx +")\\s+(.*);");
         Matcher match = pattern.matcher(line);
         if (match.matches()) {
             // firstReadMode validation

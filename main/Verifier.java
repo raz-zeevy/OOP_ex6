@@ -71,6 +71,9 @@ public class Verifier {
         }
         symbolTable.setGlobalInit();
         firstReadMode = false;
+        if (scope != 0){
+            throwVerifierException("error: end of block missing");
+        }
     }
 
     public void nextLine() {
@@ -341,7 +344,6 @@ public class Verifier {
     }
 
     private boolean checkMethodsCallParams(String methodName, String methodArgs){
-
         if (methodArgs == null){
             return symbolTable.getMethodParams(methodName).size() == 0;
         }
@@ -369,7 +371,7 @@ public class Verifier {
         Pattern charLiteralPattern = Pattern.compile("'.?'");
         Pattern stringLiteralPattern = Pattern.compile("\".*\"");
         Pattern intLiteralPattern = Pattern.compile("(-|\\+)?\\d+");
-        Pattern doubleLiteralPattern = Pattern.compile("(-|\\+)?((\\d*.?\\d+)|(\\d+.?\\d*))");
+        Pattern doubleLiteralPattern = Pattern.compile("(-|\\+)?((\\d*\\.?\\d+)|(\\d+\\.?\\d*))");
         Pattern boolLiteralPattern = Pattern.compile("true|false");
         Pattern varPattern = Pattern.compile("[a-zA-Z]\\w*");
         if (charLiteralPattern.matcher(expression).matches()) {
@@ -430,6 +432,9 @@ public class Verifier {
             String varFinal = match.group(1);
             String varType = match.group(2);
             String varName = match.group(3);
+            if (params.nameExists(varName)) {
+                throwVerifierException("each parameter name must be unique");
+            }
             params.add(new Variable(varName, varType, varFinal != null));
         }
         return params;

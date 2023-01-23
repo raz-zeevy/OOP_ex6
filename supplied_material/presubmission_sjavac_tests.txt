@@ -20,3 +20,4 @@ test474.sjava 1 2 methods with the same name
 test501.sjava 0 complex test 1
 test502.sjava 1 method without return (RAZ)
 notExist.sjava 2 file doesnt exist (RAZ)
+MotherOfAllTests 1

@@ -169,7 +169,7 @@ public class Verifier {
      * Only void methods are supported.
      */
     private boolean verifyMethod() {
-        Pattern pattern = Pattern.compile("\\s*void\\s+([a-zA-Z]\\w*)\\s*\\((.*)\\)\\s*\\{");
+        Pattern pattern = Pattern.compile("\\s*void\\s+([a-zA-Z]\\w*)\\s*\\(\\s*(.*)\\s*\\)\\s*\\{\\s*");
         Matcher match = pattern.matcher(line);
         if (match.matches()) {
             String methodName = match.group(1);
@@ -215,7 +215,7 @@ public class Verifier {
         Pattern pattern2 = Pattern.compile("\\s*(final\\s*)?\\s*("+ varsTypesRx +")\\s+(((_[[a-zA-Z]\\w*])|" +
                 "([a-zA-Z]\\w*)" +
                 "\\s*(?:;|=\\s*(\\S*"+r_OR_ANY_STRING_CHAR+"\\s*)\\s*)?)(\\s*,\\s*[^;]+)?)+\\s*;\\s*");
-        Pattern pattern = Pattern.compile("\\s*(final\\s*)?\\s*("+ varsTypesRx +")\\s+(.*);\\s*");
+        Pattern pattern = Pattern.compile("\\s*(final\\s*)?\\s*("+ varsTypesRx +")\\s+(.*)\\s*;\\s*");
         Matcher match = pattern.matcher(line);
         if (match.matches()) {
             // firstReadMode validation
@@ -444,7 +444,7 @@ public class Verifier {
 
     //TODO: Omri
     private boolean verifyIf() {
-        Pattern pattern = Pattern.compile("\\s*if\\s*\\((.*)\\)\\s*\\{");
+        Pattern pattern = Pattern.compile("\\s*if\\s*\\(\\s*(.*)\\s*\\)\\s*\\{\\s*");
         Matcher match = pattern.matcher(line);
         if (match.matches()) {
             String condition = match.group(1);
@@ -461,7 +461,7 @@ public class Verifier {
 
     //TODO: Omri
     private boolean verifyWhile() {
-        Pattern pattern = Pattern.compile("\\s*while\\s*\\((.*)\\)\\s*\\{");
+        Pattern pattern = Pattern.compile("\\s*while\\s*\\(\\s*(.*)\\s*\\)\\s*\\{\\s*");
         Matcher match = pattern.matcher(line);
         if (match.matches()) {
             String condition = match.group(1);

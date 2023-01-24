@@ -1,0 +1,8 @@
+void func(int a) {
+	return;
+}
+
+void foo() {
+	func();
+	return;
+}

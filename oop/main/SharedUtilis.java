@@ -1,5 +1,8 @@
-package main;
+package oop.main;
 
+/**
+ * This class represents the shared utilities of the verifier.
+ */
 public class SharedUtilis {
 
     /** Keywords Types **/

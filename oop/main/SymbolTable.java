@@ -1,25 +1,39 @@
-package main;
-import main.entities.GlobalVariable;
-import main.entities.Method;
-import main.entities.ParamsContainer;
-import main.entities.Variable;
+package oop.main;
+import oop.main.entities.GlobalVariable;
+import oop.main.entities.Method;
+import oop.main.entities.ParamsContainer;
+import oop.main.entities.Variable;
 
 import java.util.HashMap;
 import java.util.LinkedList;
 
 /**
- * <variable name, variable type>
+ * <variable name, Variable>
  */
 class variableMap extends HashMap<String, Variable> {} // dict: <variable name> -> <Variable>
+
+/**
+ * <variable name, GlobalVariable>
+ */
 class globalVariableMap extends HashMap<String, GlobalVariable> {} // dict: <variable name> -> <Variable>
+
+/**
+ * <method name, Method>
+ */
 class methodMap extends HashMap<String, Method> {} // dict: <method name> -> <Method>
 
-// TODO: adjust the symbol table to contain the information of final
+/**
+ * This class represents the symbol table of the verifier.
+ */
 public class SymbolTable {
+    public static final String ERROR_INIT_VAR_BEFORE_ADDITION = "BAD CODE USAGE: first check if variable exists before initializing it";
     private final globalVariableMap globalSymbolTable;
     private final LinkedList<variableMap> localSymbolTables;
     private final methodMap methodSymbolTable;
 
+    /**
+     * Constructor.
+     */
     public SymbolTable() {
         globalSymbolTable = new globalVariableMap();
         localSymbolTables = new LinkedList<>();
@@ -44,7 +58,7 @@ public class SymbolTable {
     }
 
     /**
-     *
+     * check if variable is in the local scope
      * @param name
      * @return
      */
@@ -56,30 +70,57 @@ public class SymbolTable {
         return localSymbolTable.containsKey(name);
     }
 
+    /**
+     * adds a variable to the symbol table
+     * @param varName
+     * @param varType
+     * @param varFinal
+     */
     public void addVariable(String varName, String varType, boolean varFinal) {
         if (localSymbolTables.size() != 0)
             localSymbolTables.getLast().put(varName, new Variable(varName, varType, varFinal));
         else
             globalSymbolTable.put(varName, new GlobalVariable(varName, varType, varFinal));
     }
+
+    /**
+     * adds a Variable to the symbol table
+     * @param var
+     */
     public void addVariable(Variable var) {
         addVariable(var.getName(), var.getType(), var.isFinal());
     }
 
+    /**
+     * adds a method to the symbol table
+     * @param methodName
+     * @param parameters
+     */
     public void addMethod(String methodName, ParamsContainer parameters) {
         methodSymbolTable.put(methodName, new Method(methodName, parameters));
     }
 
+    /**
+     * checks if a method is in the symbol table
+     * @param methodName the name of the method
+     * @return true if the method is in the symbol table, false otherwise
+     */
     public boolean isMethodExists(String methodName) {
         return methodSymbolTable.containsKey(methodName);
     }
 
+    /**
+     * gets the parameters of a method.
+     * @param methodName
+     * @return the parameters of the method
+     */
     public ParamsContainer getMethodParams(String methodName) {
         return methodSymbolTable.get(methodName).getParameters();
     }
 
     /**
      * when a new block is opened, a new local symbol table is created
+     * adds a new local symbol table to the symbol table
      */
     public void addLocalSymbolTable() {
         localSymbolTables.add(new variableMap());
@@ -92,33 +133,23 @@ public class SymbolTable {
         localSymbolTables.removeLast();
     }
 
+    /**
+     * inits a variable in the symbol table
+     * @param varName
+     */
     public void initVariable(String varName) {
         Variable var = getVariable(varName);
         if (var != null) {
             var.init();
         } else {
-            throw new RuntimeException("BAD CODE USAGE: first check if variable exists before initializing " +
-                    "it");
+            throw new RuntimeException(ERROR_INIT_VAR_BEFORE_ADDITION);
         }
     }
 
-//    public void printSymbolTable() {
-//        System.out.println("Global Symbol Table:");
-//        for (Variable variable : globalSymbolTable.values()) {
-//            System.out.println(variable);
-//        }
-//        System.out.println("Local Symbol Table:");
-//        for (variableMap localSymbolTable : localSymbolTables) {
-//            for (Variable variable : localSymbolTable.values()) {
-//                System.out.println(variable);
-//            }
-//        }
-//        System.out.println("Method Symbol Table:");
-//        for (Method method : methodSymbolTable.values()) {
-//            System.out.println(method);
-//        }
-//    }
-
+    /**
+     * adds a method to the symbol table
+     * @param methodName
+     */
     public void addMethodLocals(String methodName) {
         for (Variable var : getMethodParams(methodName)){
             addVariable(var);
@@ -126,11 +157,19 @@ public class SymbolTable {
         }
     }
 
+    /**
+     * resets all the global variables in the symbol table
+     * to their initial state.
+     */
     public void resetGlobalInit() {
         for (GlobalVariable variable : globalSymbolTable.values()) {
             variable.resetInit();
         }
     }
+
+    /**
+     * sets the global init of a variable to their final state.
+     */
     public void setGlobalInit(){
         for (GlobalVariable var : globalSymbolTable.values()){
             var.setGlobalInit(var.isInit());

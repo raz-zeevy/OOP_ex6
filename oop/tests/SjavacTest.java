@@ -1,5 +1,5 @@
-package tester_files.tests;
-import main.Sjavac;
+package oop.tests;
+import oop.main.Sjavac;
 import org.junit.jupiter.api.Test;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -14,9 +14,9 @@ class SjavacTest {
 
     @Test
     void main() {
-        String testRootPath =  "supplied_material/tests/";
+        String testRootPath =  "oop/tests/";
         try {
-            File myObj = new File("supplied_material/presubmission_sjavac_tests.txt");
+            File myObj = new File("oop/tests/ourTests_sjavac_tests.txt");
             Scanner myReader = new Scanner(myObj);
             while (myReader.hasNext()){
                 String[] testData = myReader.nextLine().split(" ");

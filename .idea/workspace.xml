@@ -2,12 +2,42 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="26124f8e-6433-41e3-8929-93da4cb4cfa7" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/oop/README" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/oop/tests/checkCondtionVar.sjava" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/oop/tests/checkMultiCondtition.sjava" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/oop/tests/checkScopes.sjava" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/oop/tests/conditionBeforeDec.sjava" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/oop/tests/decDouble.sjava" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/oop/tests/declarations.sjava" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/oop/tests/decs.sjava" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/oop/tests/doubleCondition.sjava" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/oop/tests/methodWithoutReturn.sjava" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/oop/tests/misspeldRetuen.sjava" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/oop/tests/multiReturn.sjava" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/oop/tests/ourTests_sjavac_tests.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/oop/tests/simpleDec.sjava" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/oop/tests/simpleMethod.sjava" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/oop/tests/simpleWhile.sjava" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/oop/tests/spaces.sjava" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/oop/tests/twoParentheses.sjava" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/oop/tests/wringMultiConditions.sjava" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/oop/tests/wrongCallingMethod.sjava" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/oop/tests/wrongIfParenthases.sjava" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/oop/tests/wrongScopes.sjava" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main/Verifier.java" beforeDir="false" afterPath="$PROJECT_DIR$/main/Verifier.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main/SJavaException.java" beforeDir="false" afterPath="$PROJECT_DIR$/oop/main/SJavaException.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main/SharedUtilis.java" beforeDir="false" afterPath="$PROJECT_DIR$/oop/main/SharedUtilis.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main/Sjavac.java" beforeDir="false" afterPath="$PROJECT_DIR$/oop/main/Sjavac.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main/SymbolTable.java" beforeDir="false" afterPath="$PROJECT_DIR$/oop/main/SymbolTable.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main/Verifier.java" beforeDir="false" afterPath="$PROJECT_DIR$/oop/main/Verifier.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main/entities/GlobalVariable.java" beforeDir="false" afterPath="$PROJECT_DIR$/oop/main/entities/GlobalVariable.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main/entities/Method.java" beforeDir="false" afterPath="$PROJECT_DIR$/oop/main/entities/Method.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main/entities/ParamsContainer.java" beforeDir="false" afterPath="$PROJECT_DIR$/oop/main/entities/ParamsContainer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main/entities/Variable.java" beforeDir="false" afterPath="$PROJECT_DIR$/oop/main/entities/Variable.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/supplied_material/presubmission_sjavac_tests.txt" beforeDir="false" afterPath="$PROJECT_DIR$/supplied_material/presubmission_sjavac_tests.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tester_files/tests/SjavacTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/oop/tests/SjavacTest.java" afterDir="false" />
     </list>
-    <list id="3615eab5-25b9-4700-8acc-90b00853b216" name="Changes by omrib" comment="">
-      <change beforePath="$PROJECT_DIR$/supplied_material/tests/MotherOfAllTests" beforeDir="false" afterPath="$PROJECT_DIR$/supplied_material/tests/MotherOfAllTests" afterDir="false" />
-    </list>
+    <list id="3615eab5-25b9-4700-8acc-90b00853b216" name="Changes by omrib" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -70,32 +100,17 @@
       <recent name="main" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.Sjavac">
+  <component name="RunManager" selected="JUnit.SjavacTest (1)">
     <configuration name="Sjavac" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="main.Sjavac" />
+      <option name="MAIN_CLASS_NAME" value="oop.main.Sjavac" />
       <module name="ex6" />
       <option name="PROGRAM_PARAMETERS" value="&quot;supplied_material\tests\MotherOfAllTests&quot;" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="main.entities.*" />
+          <option name="PATTERN" value="oop.main.entities.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="SjavacTest (1)" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="ex6" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="tester_files.tests.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="tester_files.tests" />
-      <option name="MAIN_CLASS_NAME" value="tester_files.tests.SjavacTest" />
-      <option name="TEST_OBJECT" value="class" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -110,6 +125,21 @@
       </extension>
       <option name="PACKAGE_NAME" value="tests" />
       <option name="MAIN_CLASS_NAME" value="tests.SjavacTest" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="SjavacTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="ex6" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="oop.tests.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="tester_files.tests" />
+      <option name="MAIN_CLASS_NAME" value="oop.tests.SjavacTest" />
       <option name="TEST_OBJECT" value="class" />
       <method v="2">
         <option name="Make" enabled="true" />
@@ -139,8 +169,8 @@
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Application.Sjavac" />
         <item itemvalue="JUnit.SjavacTest (1)" />
+        <item itemvalue="Application.Sjavac" />
         <item itemvalue="JUnit.SjavacTest" />
         <item itemvalue="JUnit.SjavacTest.main" />
       </list>
@@ -175,19 +205,8 @@
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="java-line">
-          <condition expression="lineNumber == 3" language="JAVA" />
-          <url>file://$PROJECT_DIR$/main/Verifier.java</url>
-          <line>372</line>
-          <option name="timeStamp" value="1" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/main/Verifier.java</url>
-          <line>55</line>
-          <option name="timeStamp" value="3" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/main/Verifier.java</url>
-          <line>218</line>
+          <url>file://$PROJECT_DIR$/oop/main/Verifier.java</url>
+          <line>293</line>
           <option name="timeStamp" value="4" />
         </line-breakpoint>
       </breakpoints>

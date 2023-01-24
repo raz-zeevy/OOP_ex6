@@ -1,0 +1,11 @@
+void func() {
+	while(true) {
+		int a = 5;
+		if (false) {
+
+		}
+	}
+	return;
+}
+
+double z = 2;

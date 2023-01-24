@@ -1,0 +1,120 @@
+omri_bergman
+raz.zeevy
+
+=============================
+=      File description     =
+=============================
+# oop:
+ # main:
+    - SharedUtilis.java - contains all the shared functions and fields
+    - Sjavac.java - This is the main class, it is responsible for the Api of the verifier
+    - SJavaException.java - This is the exception class, it is responsible for the exception handling
+    - SymbolTable.java - This is the symbol table class, it is responsible for the symbol table
+    - Verifier.java - This is the verifier class, it is responsible for the verification of the code
+  # entities:
+      - GlobalVariable.java - This is the global variable class, it is responsible for the global variable
+      - Method.java - This is the method class, it is responsible for the method
+      - ParamsContainer.java - This is the params container class, it is responsible for the params container
+      - Variable.java - This is the variable class, it is responsible for the variable
+ # tests:
+    - checkCondtionVar.sjava 0 check int var as condition
+    - declarations.sjava 0 check basic declarations
+    - twoParentheses.sjava 1 two parentheses in method
+    - checkMultiCondtition.sjava 0 check && condition
+    - decs.sjava 0 check basic int declarations
+    - simpleDec.sjava 0 the basic declaration and spaces
+    - wringMultiConditions.sjava 1 using ||| and not ||
+    - checkScopes.sjava 0 check number of nested scopes
+    - doubleCondition.sjava 0 check double as condition
+    - simpleMethod.sjava 0 basic method
+    - wrongCallingMethod.sjava 1 wrong colling method
+    - conditionBeforeDec.sjava 1 check var as condition before initialize
+    - misspeldRetuen.sjava 1 misspell return
+    - simpleWhile.sjava 0 check simple while inside a method
+    - wrongIfParenthases.sjava 1 use {} and not ()
+    - decDouble.sjava 1 check wrong declaration for double
+    - multiReturn.sjava 0 check number of return in one method
+    - spaces.sjava 0 check a lot of spaces
+    - wrongScopes.sjava 1 to many scopes
+    - methodWithoutReturn.sjava 1 check number of method one of them without return
+
+=============================
+=          Design           =
+=============================
+The design of the verifier includes several main classes: SharedUtilis.java, Sjavac.java,
+SJavaException.java, SymbolTable.java, and Verifier.java. The SharedUtilis.java class contains all the shared
+functions and fields that are used throughout the verifier.
+The Sjavac.java class is responsible for the API of the verifier, it is the entry point to the verifier. The
+SJavaException.java class is responsible for the exception handling as we mentions previously, The
+SymbolTable.java class is responsible for maintaining the symbol table, it keeps track of the
+variables, methods, their state and scope. in Addition the symbol table keeps track of the parameters of each
+method, and the initialization state of each variable.
+The Verifier.java class is responsible for the verification of the code, it checks the code for any errors
+and throws an exception if any are found. The main features of the verifier include checking for errors in
+the code, such as incorrect syntax, undeclared variables, and incorrect use of conditions. The main features
+of the symbol table include maintaining a list of variables, methods, and their scope.
+
+ ######## Main Challanges ########
+
+One of the main challenges we faced was handling the scope of variables and methods. We overcame this
+challenge by implementing the SymbolTable class, which keeps track of the scope of the variables and methods.
+Another challenge was handling the different types of expressions that can be used in the code. We overcame
+this challenge by implementing a function that deals with the valid type casts,
+and we used regular expressions to check the validity of the expressions.
+
+=============================
+=  Implementation details   =
+=============================
+We devised the design by first identifying the main components that are needed for a verifier and then
+organizing them into classes (eg. SymbolTable, Variable, ParamContianer) based on their responsibilities.
+We used the Composition pattern for the Symbol Table class. In addition we used inharitance for the
+GlobalVariable and Variable classes. and for creating "typedefs" for the different types of maps we used
+in the SymbolTable class.
+We avoided using the Singleton pattern because it would have caused problems with concurrency.
+
+=============================
+=    Answers to questions   =
+=============================
+
+######## Error Handling ########
+We handled errors in the code by implementing a custom exception class called "SJavaException". This class
+is responsible for handling any errors that occur during the verification process and throwing an appropriate
+exception message. We chose to handle errors this way because it allows for a clear and organized way to
+handle and display errors to the user.
+there is a function called "throwVerifierException" that is responsible for throwing the exception and
+printing the error message to the user. This function is called in the verification process whenever an error
+occurs. The function receives a string that contains the error message and drows the line number of the error
+from a private field of the verifier.
+
+######## REGEX ########
+Regex 1: "\\s*if\\s*\\(\\s*(.)\\s\\)\\s*\\{\\s*"
+This regular expression is used to identify if statements in the code.
+It checks for the keyword "if" followed by an opening parenthesis, the condition, and a closing parenthesis
+and an opening curly brace. The condition inside the if statement is captured in a group and sent to another
+method for further verification.
+
+Regex 2: "(final\\s)?(" + varsTypesRx + ")\\s+([a-zA-Z]\\w*)(,)?"
+This regular expression is used to extract information about the parameters of a method or function.
+It captures three groups of information:
+The first group checks for the keyword "final" before the parameter, indicating that it is a constant.
+The second group captures the type of the parameter, using the regular expression varsTypesRx.
+The third group captures the name of the parameter.
+
+######## Handling New Features ########
+
+1. Handling new type of variables:
+   In order to handle new types of variables, we need to add the new type to the varsTypesRx regular
+   expression.
+   This will allow the verifier to recognize the new type of variable and to check its validity.
+   We will also need to add new cases to the method "verifyExpression" and "getExpressionType" in the Verifier
+
+2. a. To implement classes in the verifier, we would first need to add a new class called "Class.java" that
+  would
+  be responsible for maintaining the class-level variables and methods. We would also need to update the
+  SymbolTable class to keep track of the classes and their variables and methods. To implement different
+  method
+  return types, we would need to add a new field to the Method class to keep track of the return type and
+  update the Verifier class to check for correct return types.
+  b. To use methods of the standard Java library, we would need to add a new class called "Library.java" that
+  would be responsible for maintaining a list of the available library methods and updating the Verifier
+  class to check for correct usage of the library methods.

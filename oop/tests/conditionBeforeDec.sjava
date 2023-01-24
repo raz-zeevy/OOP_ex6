@@ -1,0 +1,6 @@
+void func() {
+	if    (a )    {
+	}
+	int a = 3;
+	return;
+}

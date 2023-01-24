@@ -1,0 +1,20 @@
+checkCondtionVar.sjava 0 check int var as condition
+declarations.sjava 0 check basic declarations
+twoParentheses.sjava 1 two parentheses in method
+checkMultiCondtition.sjava 0 check && condition
+decs.sjava 0 check basic int declarations
+simpleDec.sjava 0 the basic declaration and spaces
+wringMultiConditions.sjava 1 using ||| and not ||
+checkScopes.sjava 0 check number of nested scopes
+doubleCondition.sjava 0 check double as condition
+simpleMethod.sjava 0 basic method
+wrongCallingMethod.sjava 1 wrong colling method
+conditionBeforeDec.sjava 1 check var as condition before initialize
+misspeldRetuen.sjava 1 misspell return
+simpleWhile.sjava 0 check simple while inside a method
+wrongIfParenthases.sjava 1 use {} and not ()
+decDouble.sjava 1 check wrong declaration for double
+multiReturn.sjava 0 check number of return in one method
+spaces.sjava 0 check a lot of spaces
+wrongScopes.sjava 1 to many scopes
+methodWithoutReturn.sjava 1 check number of method one of them without return

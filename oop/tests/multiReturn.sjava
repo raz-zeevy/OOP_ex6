@@ -1,0 +1,8 @@
+
+void func(  ) {
+	while (true) {
+		return;
+		return;
+	}
+	return;
+}

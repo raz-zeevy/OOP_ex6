@@ -1,64 +1,130 @@
-package main;
+package oop.main;
 
-import main.entities.ParamsContainer;
-import main.entities.Variable;
+import oop.main.entities.ParamsContainer;
+import oop.main.entities.Variable;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static main.SharedUtilis.*;
-
+import static oop.main.SharedUtilis.*;
 
 
 /**
- * TODOS
- // TODO : change the split in assignments and decleration to exclude "," when in "" or '' / OMRI
+ * This class is responsible for verifying the code
+ * and throwing errors if needed (e.g. variable not declared)
  */
 public class Verifier {
 
+    /** errors **/
+
+    public static final String ERROR_INVALID_METHOD_DECLARATION = "error: Invalid method declaration";
+    public static final String ERROR_END_OF_BLOCK_MISSING = "error: end of block missing";
+    public static final String ERROR_END_OF_LINE = "error: ';' expected";
+
+    public static final String ERROR_EXPECTED_END_OF_BLOCK = "error: expected end of block";
+
+    public static final String ERROR_INVALID_METHOD_PARAMETERS = "error: invalid method parameters";
+    public static final String ERROR_METHOD_MUST_END_WITH_A_RETURN_STATEMENT = "error: method must end with a return statement";
+    public static final String ERROR_INVALID_VARIABLE_DECLARATION = "error: invalid variable declaration";
+    public static final String ERROR_VARIABLE_ALREADY_DECLARED = "error: variable %s already declared in this scope";
+    public static final String ERROR_FINAL_VARIABLE_DECLARED_NO_VALUE = "error: final variable must be declared with a value";
+    public static final String ERROR_TYPE_VALUE_MISMATCH = "error: variable type doesn't match value type";
+
+    public static final String ERROR_UNKNOWN_VARIABLE = "error: variable %s is not defined";
+    public static final String ERROR_ASSIGNMENT_TO_FINAL = "error: cannot assign value to final variable";
+    public static final String ERROR_UNKNOWN_METHOD = "error: unknown Method";
+    public static final String ERROR_INVALID_METHOD_CALL_PARAMETERS = "error: invalid method call parameters";
+    public static final String ERROR_VARIABLE_NOT_INIT = "error: variable \"%s\" wasn't initiated";
+    public static final String ERROR_INVALID_EXPRESSION = "error: invalid expression";
+    public static final String ERROR_NOT_UNIQUE_PARAM_NAME = "error: each parameter name must be unique";
+    public static final String ERROR_ILLEGAL_CONDITION = "error: illegal condition";
+    public static final String THROWER_PREFIX_TO_EXCEPTION = "Line %s: %s";
+
+    /** regexes **/
+    public static final String R_METHOD_DECLERATION = "\\s*void\\s+([a-zA-Z]\\w*)\\s*\\(\\s*(.*)\\s*\\)\\s*\\{\\s*";
+    public static final String R_PIPE = "|";
+    public static final String R_VAR_DEC_SPLIT = ",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)(?=(?:[^']*'[^']*')*[^']*$)";
+
+    public static final String R_COMMENT = "//.*";
+    public static final String R_OR_ANY_STRING_CHAR = "|\\\".*\\\"|\'.*\'|";
+    public static final String R_END_OF_LINE = "(.*(?:;|\\{)\\s*)|\\s*}\\s*";
+    public static final String R_OPEN_SCOPE = ".*([{]\\s*)$";
+    public static final String R_CLOSE_SCOPE = ".*([}]\\s*)$";
+    public static final String R_CLOSE_BRACKET = "}";
+    public static final String R_VARIABLE_DECLERATION = "\\s*(_?[a-zA-Z]\\w*)\\s*(=\\s*([\\S^;]+|\".*\"|))" +
+            "?\\s*;?";
+    public static final String R_ASSIGNMENT_SPLIT = ",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)(?=(?:[^']*'[^']*')*[^']*$)";
+    public static final String R_ASSIGNMENT = "\\s*([a-zA-z]\\w*)\\s*=\\s*([\\S*^]";
+    public static final String R_METHOD_CALL = "\\s*([a-zA-Z]\\w*)\\s*\\((([a-zA-Z]\\w*|\".*\"|\\d+)(,\\s*([a-zA-Z]\\w*|\".*\"|\\d+))*)?\\);";
+    public static final String R_SPACES = "\\s";
+    public static final String R_EMPTY_STRING = "";
+    public static final String R_METHOD_PARAMS_SPLIT = ",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)";
+    public static final String R_CHAR_LITERAL = "'.?'";
+    public static final String R_STRING_LITERAL = "\".*\"";
+    public static final String R_INT_LITERAL = "(-|\\+)?\\d+";
+    public static final String R_DOUBLE_LITERAL = "(-|\\+)?((\\d*\\.?\\d+)|(\\d+\\.?\\d*))";
+    public static final String R_BOOL_LITERAL = "true|false";
+    public static final String R_VARIABLE = "[a-zA-Z]\\w*";
+    public static final String R_IF = "\\s*if\\s*\\(\\s*(.*)\\s*\\)\\s*\\{\\s*";
+    public static final String R_WHILE = "\\s*while\\s*\\(\\s*(.*)\\s*\\)\\s*\\{\\s*";
+    public static final String R_CONDITION_SPLIT = "\\|\\||&&(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)(?=(?:[^']*'[^']*')*[^']*$)";
+    public static final String R_CONDITION = "(\\s*([a-zA-Z]\\w*)|(-?\\d*.?\\d+)|(\\|\\||&&)\\s*)";
+
+    public static final String R_RETURN = "\\s*return\\s*;\\s*";
+
+    /** verifier constants **/
     public static final int GLOBAL_SCOPE_INDEX = 0;
     public static final String CHAR_LITERAL = "charLiteral";
-    public static final String r_OR_ANY_STRING_CHAR = "|\\\".*\\\"|\'.*\'|";
-    public static final String r_SPLIT_BY_COMMA = "\\s*,\\s*";
+
+    /** Verifier Fields **/
     private final SymbolTable symbolTable;
     private BufferedReader reader;
+
     private String line;
     private int scope;
     private boolean firstReadMode = false;
     private int lineNumber;
     private boolean hasReturned;
 
+    /** constructor **/
     public Verifier() {
         symbolTable = new SymbolTable();
-        scope = 0;
+        scope = GLOBAL_SCOPE_INDEX;
     }
 
-//    public void printSymbolTable() {
-//        symbolTable.printSymbolTable();
-//    }
-
+    /**
+     * this method initializes the line number and the scope to 0 and the reader.
+     * @param  reader
+     * @return {0,1,2}
+     */
     public void initReader(BufferedReader reader) {
         this.lineNumber = 0;
-        this.scope = 0;
+        this.scope = GLOBAL_SCOPE_INDEX;
         this.reader = reader;
         nextLine();
     }
 
+    /**
+     * This method verifies that the code is a valid Sjava code, and throws errors if needed (e.g. variable
+     * not declared)
+     * @param reader
+     */
     public void verify(BufferedReader reader) {
         initReader(reader);
         for (; line != null; nextLine()) {
             if (!(verifyVarDec() || verifyMethod() || verifyAssignment())){
-                    throwVerifierException("Invalid method declaration");
+                    throwVerifierException(ERROR_INVALID_METHOD_DECLARATION);
             }
         }
     }
 
+    /**
+     * This method scans the entrie code and initializes the symbol table with the global variables and
+     * methods.
+     * @param reader
+     */
     public void firstRead(BufferedReader reader) {
         initReader(reader);
         firstReadMode = true;
@@ -71,11 +137,14 @@ public class Verifier {
         }
         symbolTable.setGlobalInit();
         firstReadMode = false;
-        if (scope != 0){
-            throwVerifierException("error: end of block missing");
+        if (scope != GLOBAL_SCOPE_INDEX){
+            throwVerifierException(ERROR_END_OF_BLOCK_MISSING);
         }
     }
 
+    /**
+     * this method gets the next line from the reader and skips empty lines and comments.
+     */
     public void nextLine() {
         try {
             line = reader.readLine();
@@ -92,13 +161,16 @@ public class Verifier {
         }
     }
 
+    /**
+     * this method verifies that the line ends with a semicolon or a closing bracket.
+     */
     private void verifyEndOfLine() {
-        Pattern endOfLinePattern = Pattern.compile("(.*(?:;|\\{)\\s*)|\\s*}\\s*");
+        Pattern endOfLinePattern = Pattern.compile(R_END_OF_LINE);
         if (!endOfLinePattern.matcher(line).matches()){
-            throwVerifierException("error: ';' expected");
+            throwVerifierException(ERROR_END_OF_LINE);
         }
-        Pattern openScopePattern = Pattern.compile(".*([{]\\s*)$");
-        Pattern closeScopePattern = Pattern.compile(".*([}]\\s*)$");
+        Pattern openScopePattern = Pattern.compile(R_OPEN_SCOPE);
+        Pattern closeScopePattern = Pattern.compile(R_CLOSE_SCOPE);
         if (openScopePattern.matcher(line).matches()){
             scope++;
         }
@@ -107,15 +179,22 @@ public class Verifier {
         }
     }
 
+    /**
+     * this method verifies that there is an end of block in the end of the line.
+     */
     private void verifyEndBlock() {
-        if (!line.strip().equals("}")) {
-            throwVerifierException("Expected end of block");
+        if (!line.strip().equals(R_CLOSE_BRACKET)) {
+            throwVerifierException(ERROR_EXPECTED_END_OF_BLOCK);
         }
         symbolTable.removeLocalSymbolTable();
     }
 
+    /**
+     * this method verifies that the line is a comment
+     * @return true if the line is a comment, false otherwise
+     */
     public boolean verifyComment() {
-        Pattern pattern = Pattern.compile("//.*");
+        Pattern pattern = Pattern.compile(R_COMMENT);
         return pattern.matcher(line).matches();
     }
 
@@ -153,8 +232,6 @@ public class Verifier {
     }
 
 
-    //TODO: Omri
-
     /**
      * eg: "void boo(int a, int b, String s) {"
      * parameters is a comma-separated list of parameters.
@@ -167,15 +244,16 @@ public class Verifier {
      * (i.e., they may not start with a digit or an underscore).
      * *******************
      * Only void methods are supported.
+     * returns: true if the line is a valid method declaration, false otherwise
      */
     private boolean verifyMethod() {
-        Pattern pattern = Pattern.compile("\\s*void\\s+([a-zA-Z]\\w*)\\s*\\(\\s*(.*)\\s*\\)\\s*\\{\\s*");
+        Pattern pattern = Pattern.compile(R_METHOD_DECLERATION);
         Matcher match = pattern.matcher(line);
         if (match.matches()) {
             String methodName = match.group(1);
             String methodParams = match.group(2);
             if (!verifyParameterList(methodParams)) {
-                throwVerifierException("Invalid method parameters");
+                throwVerifierException(ERROR_INVALID_METHOD_PARAMETERS);
             }
             if (firstReadMode) {
                 ParamsContainer params = getParameters(methodParams);
@@ -186,7 +264,7 @@ public class Verifier {
                 nextLine();
                 verifyMethodBody();
                 if (!hasReturned)
-                    throwVerifierException("Method must end with a return statement");
+                    throwVerifierException(ERROR_METHOD_MUST_END_WITH_A_RETURN_STATEMENT);
                 verifyEndBlock();
                 symbolTable.resetGlobalInit();
             }
@@ -204,48 +282,43 @@ public class Verifier {
         }
     }
 
-    //TODO: Raz
     /**
      * eg: "int a = 5, b = 3, c;"
      * Variable declaration lines
      * check variable naming conventions in sJava
+     * returns: true if the line is a valid variable declaration, false otherwise
      */
     private boolean verifyVarDec() {
-        String varsTypesRx = String.join("|", variableTypes);
-        Pattern pattern2 = Pattern.compile("\\s*(final\\s*)?\\s*("+ varsTypesRx +")\\s+(((_[[a-zA-Z]\\w*])|" +
-                "([a-zA-Z]\\w*)" +
-                "\\s*(?:;|=\\s*(\\S*"+r_OR_ANY_STRING_CHAR+"\\s*)\\s*)?)(\\s*,\\s*[^;]+)?)+\\s*;\\s*");
+        String varsTypesRx = String.join(R_PIPE, variableTypes);
         Pattern pattern = Pattern.compile("\\s*(final\\s*)?\\s*("+ varsTypesRx +")\\s+(.*)\\s*;\\s*");
         Matcher match = pattern.matcher(line);
         if (match.matches()) {
             // firstReadMode validation
-            if (!firstReadMode && scope == 0){
+            if (!firstReadMode && scope == GLOBAL_SCOPE_INDEX){
                 return true;
             }
             String varFinal = match.group(1);
             String varType = match.group(2);
-
-            for (String dec : match.group(3).split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)(?=(?:[^']*'[^']*')*[^']*$)", -1)){
+            for (String dec : match.group(3).split(R_VAR_DEC_SPLIT, -1)){
 //            for (String dec : match.group(3).split(r_SPLIT_BY_COMMA)){
-                Pattern varPattern = Pattern.compile("\\s*(_?[a-zA-Z]\\w*)\\s*(=\\s*([\\S^;]+|\".*\"|))" +
-                        "?\\s*;?");
+                Pattern varPattern = Pattern.compile(R_VARIABLE_DECLERATION);
                 Matcher varMatch = varPattern.matcher(dec);
                 // needed in order for the groups to be calculated
                 if (!varMatch.matches()){
-                    throwVerifierException("invalid variable declaration");
+                    throwVerifierException(ERROR_INVALID_VARIABLE_DECLARATION);
                 }
                 String varName = varMatch.group(1);
                 String varValue = varMatch.group(3);
                 // check if variable wasn't declared in the scope yet:
                 if (symbolTable.inLocalScope(varName)) {
-                    throwVerifierException("Variable " + varName + " already declared in this scope");
+                    throwVerifierException(String.format(ERROR_VARIABLE_ALREADY_DECLARED,varName));
                 }
                 // check if final and has value
                 if (varValue == null && varFinal != null)
-                    throwVerifierException("Final variable must be declared with a value");
+                    throwVerifierException(ERROR_FINAL_VARIABLE_DECLARED_NO_VALUE);
                 // check if value matches type
                 if (varValue != null && !checkType(varValue, varType))
-                    throwVerifierException("Variable type doesn't match value type");
+                    throwVerifierException(ERROR_TYPE_VALUE_MISMATCH);
                 // adds variable to SymbolTable
                 symbolTable.addVariable(varName, varType, varFinal != null);
                 if (varValue != null) {
@@ -283,13 +356,16 @@ public class Verifier {
         return false;
     }
 
-    //TODO: Omri
+    /**
+     * verify that the line is a valid assignment line
+     * @return true if the line is a valid assignment line, false otherwise
+     */
     private boolean verifyAssignment() {
 
 //        for (String assignment : line.split(r_SPLIT_BY_COMMA)) {
-        for (String assignment : line.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)(?=(?:[^']*'[^']*')*[^']*$)", -1)) {
+        for (String assignment : line.split(R_ASSIGNMENT_SPLIT, -1)) {
 //            Pattern pattern = Pattern.compile("\\s*([a-zA-z]\\w*)\\s*=\\s*(\".*\")\\s*;");
-            Pattern pattern = Pattern.compile("\\s*([a-zA-z]\\w*)\\s*=\\s*([\\S*^]"+r_OR_ANY_STRING_CHAR+");?");
+            Pattern pattern = Pattern.compile(R_ASSIGNMENT + R_OR_ANY_STRING_CHAR +");?");
             Matcher match = pattern.matcher(assignment);
             if (match.matches()) {
                 // verify InnerScope
@@ -301,15 +377,15 @@ public class Verifier {
                 // check if exist in symbolTable
                 Variable var = symbolTable.getVariable(varName);
                 if (var == null) {
-                    throwVerifierException("Variable " + varName + " is not defined");
+                    throwVerifierException(String.format(ERROR_UNKNOWN_VARIABLE, varName));
                 }
                 // check if type of varValue is the same type as variable
                 if (!checkType(varValue, var.getType())) {
-                    throwVerifierException("Variable type doesn't match value type");
+                    throwVerifierException(ERROR_TYPE_VALUE_MISMATCH);
                 }
                 // check if not final
                 if (var.isInit() && var.isFinal()) {
-                    throwVerifierException("Cannot assign value to final variable");
+                    throwVerifierException(ERROR_ASSIGNMENT_TO_FINAL);
                 }
                 if (!var.isInit())
                     symbolTable.initVariable(varName);
@@ -319,38 +395,41 @@ public class Verifier {
         return true;
     }
 
-    //TODO: Omri
-    // TODO: add support for: boo(1,'3',"hello"); right now 'x' is not supported
     /**
      * only void methods are supported
      * eg: "foo(a,b); a and b must be existing variables"
      * variables without type
+     * @return: true if the line is a valid method call, false otherwise
      */
     private boolean verifyCallingMethod() {
-        Pattern pattern = Pattern.compile("\\s*([a-zA-Z]\\w*)\\s*\\((([a-zA-Z]\\w*|\".*\"|\\d+)(,\\s*" +
-                "([a-zA-Z]\\w*|\".*\"|\\d+))*)?\\);");
-        Matcher match = pattern.matcher(line.replaceAll("\\s",""));
+        Pattern pattern = Pattern.compile(R_METHOD_CALL);
+        Matcher match = pattern.matcher(line.replaceAll(R_SPACES, R_EMPTY_STRING));
         if (match.matches()) {
             String methodName = match.group(1);
             // check if method exist in symbolTable
             if (!symbolTable.isMethodExists(methodName)) {
-                throwVerifierException("Unknown Method" + methodName);
+                throwVerifierException(ERROR_UNKNOWN_METHOD + methodName);
             }
             String methodArgs = match.group(2);
             // check if arguments match method parameters
             if (!checkMethodsCallParams(methodName, methodArgs)){
-                throwVerifierException("Invalid method call parameters");
+                throwVerifierException(ERROR_INVALID_METHOD_CALL_PARAMETERS);
             }
         }
         return match.matches();
     }
 
+    /**
+     * verify the parameters of a method call
+     * @param methodName
+     * @param methodArgs
+     * @return true if the parameters match the method parameters, false otherwise
+     */
     private boolean checkMethodsCallParams(String methodName, String methodArgs){
         if (methodArgs == null){
             return symbolTable.getMethodParams(methodName).size() == 0;
         }
-        String[] vars = methodArgs.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)");
-
+        String[] vars = methodArgs.split(R_METHOD_PARAMS_SPLIT);
         ParamsContainer params =  symbolTable.getMethodParams(methodName);
         if (params.size() != vars.length) { return false;}; // check if number of params of the method are equal to the vars
         int i = 0;
@@ -362,20 +441,18 @@ public class Verifier {
         return true;
     }
 
-    //TODO: Changed this function
     /**
      * returns the TYPE of the given string
      * @param expression
-     * @return
+     * @returns: the type of the given string
      */
     public String getExpressionType(String expression) {
-        //TODO check if empty char is valid
-        Pattern charLiteralPattern = Pattern.compile("'.?'");
-        Pattern stringLiteralPattern = Pattern.compile("\".*\"");
-        Pattern intLiteralPattern = Pattern.compile("(-|\\+)?\\d+");
-        Pattern doubleLiteralPattern = Pattern.compile("(-|\\+)?((\\d*\\.?\\d+)|(\\d+\\.?\\d*))");
-        Pattern boolLiteralPattern = Pattern.compile("true|false");
-        Pattern varPattern = Pattern.compile("[a-zA-Z]\\w*");
+        Pattern charLiteralPattern = Pattern.compile(R_CHAR_LITERAL);
+        Pattern stringLiteralPattern = Pattern.compile(R_STRING_LITERAL);
+        Pattern intLiteralPattern = Pattern.compile(R_INT_LITERAL);
+        Pattern doubleLiteralPattern = Pattern.compile(R_DOUBLE_LITERAL);
+        Pattern boolLiteralPattern = Pattern.compile(R_BOOL_LITERAL);
+        Pattern varPattern = Pattern.compile(R_VARIABLE);
         if (charLiteralPattern.matcher(expression).matches()) {
             return CHAR_LITERAL;
         } else if (stringLiteralPattern.matcher(expression).matches()) {
@@ -389,42 +466,37 @@ public class Verifier {
         } else if (varPattern.matcher(expression).matches()) {
             Variable var = symbolTable.getVariable(expression);
             if (var == null) {
-                throwVerifierException("Variable \"" + expression + "\" is not defined");
+                throwVerifierException(ERROR_UNKNOWN_VARIABLE);
             } else {
                 if (!var.isInit()){
-                    throwVerifierException("Variable \"" + expression + "\" wasn't initiated");
+                    throwVerifierException(String.format(ERROR_VARIABLE_NOT_INIT,expression));
                 }
                 return var.getType();
             }
         }
         else
-         throwVerifierException("Invalid expression");
+         throwVerifierException(ERROR_INVALID_EXPRESSION);
         return null;
     }
 
-    // TODO: Raz
+    /**
+     * verify if the string is a valid return parameter list
+     * @param params - the string to verify
+     * @return true if the string is a valid parameters list, false otherwise
+     */
     private boolean verifyParameterList(String params) {
-        String varsTypesRx = String.join("|", variableTypes);
+        String varsTypesRx = String.join(R_PIPE, variableTypes);
         String regPattern = "(\\s*(final\\s)?(" + varsTypesRx + ")\\s+([a-zA-Z]\\w*)\\s*[,]?)*|\\s*";
         Pattern pattern = Pattern.compile(regPattern);
         Matcher match = pattern.matcher(params);
-
-
-//        HashMap<String, Variable> Args = new HashMap<String, Variable>();
-//
-//        for (String str : params.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)(?=(?:[^']*'[^']*')*[^']*$)", -1)){
-//            String[] argument =  str.trim().split(" ");
-//            Variable var = new Variable(argument[1], argument[0], false);
-//            if (Args.containsKey(argument[1]) && Args.get(argument[1]).getType().equals(argument[0])){
-//                return false;
-//            }
-//            Args.put(argument[1],var); //TODO how?!?!
-//        }
-
         return match.matches();
     }
 
-    //TODO: Raz
+    /**
+     * gets the paramters out of the paramters string
+     * @param paramsString
+     * @return ParamsContainer with the parameters
+     */
     private ParamsContainer getParameters(String paramsString) {
         ParamsContainer params = new ParamsContainer();
         String varsTypesRx = String.join("|", variableTypes);
@@ -435,16 +507,19 @@ public class Verifier {
             String varType = match.group(2);
             String varName = match.group(3);
             if (params.nameExists(varName)) {
-                throwVerifierException("each parameter name must be unique");
+                throwVerifierException(ERROR_NOT_UNIQUE_PARAM_NAME);
             }
             params.add(new Variable(varName, varType, varFinal != null));
         }
         return params;
     }
 
-    //TODO: Omri
+    /**
+     * verify if the line is a valid if statement
+     * @return true if the line is a valid if statement, false otherwise
+     */
     private boolean verifyIf() {
-        Pattern pattern = Pattern.compile("\\s*if\\s*\\(\\s*(.*)\\s*\\)\\s*\\{\\s*");
+        Pattern pattern = Pattern.compile(R_IF);
         Matcher match = pattern.matcher(line);
         if (match.matches()) {
             String condition = match.group(1);
@@ -459,9 +534,12 @@ public class Verifier {
         return match.matches();
     }
 
-    //TODO: Omri
+    /**
+     * verify if the line is a valid while statement
+     * @return true if the line is a valid while statement, false otherwise
+     */
     private boolean verifyWhile() {
-        Pattern pattern = Pattern.compile("\\s*while\\s*\\(\\s*(.*)\\s*\\)\\s*\\{\\s*");
+        Pattern pattern = Pattern.compile(R_WHILE);
         Matcher match = pattern.matcher(line);
         if (match.matches()) {
             String condition = match.group(1);
@@ -476,7 +554,6 @@ public class Verifier {
         return match.matches();
     }
 
-    // Todo: Omri
     /**
      * this method verifies the condition of the if statement
      * the condition is strictly defined by the s-java description (Section 5.4)
@@ -484,39 +561,45 @@ public class Verifier {
      * eg: "if (a) {"
      * eg: "if (3) {"
      * eg: "if (isFantastic && -3.25 || true) {"
+     @returns: true if the condition is valid, false otherwise
      */
     private boolean verifyCondition(String TheCondition) {
-        for (String condition : TheCondition.split("\\|\\||&&(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)" +
-                "(?=(?:[^']*'[^']*')*[^']*$)", -1)) {
+        for (String condition : TheCondition.split(R_CONDITION_SPLIT, -1)) {
             condition = condition.trim();
-            Pattern pattern = Pattern.compile("(\\s*([a-zA-Z]\\w*)|(-?\\d*.?\\d+)|(\\|\\||&&)\\s*)");
+            Pattern pattern = Pattern.compile(R_CONDITION);
             Matcher match = pattern.matcher(condition);
             if (match.find()) {
                 String type = getExpressionType(condition);
                 if (type.equals(INT) || type.equals(DOUBLE)) {
                     if (symbolTable.getVariable(condition) == null) {
-                        throwVerifierException("illegal condition");
+                        throwVerifierException(ERROR_ILLEGAL_CONDITION);
                     }
                 }
-                if (type.equals(STRING) || type.equals(CHAR) || type.equals(STRING_LITERAL)){throwVerifierException("illegal condition");}
+                if (type.equals(STRING) || type.equals(CHAR) || type.equals(STRING_LITERAL)){
+                    throwVerifierException(ERROR_ILLEGAL_CONDITION);
+                }
             }
-
-            // TODO: raise Exception when condition is not valid
-            // TODO: check types of variables with symboltable
-            if (!match.matches()){throwVerifierException("illegal condition");}
+            if (!match.matches()){throwVerifierException(ERROR_ILLEGAL_CONDITION);}
         }
         return true;
     }
 
-    //TODO: Omri
+    /**
+     * verify if the line is a valid return statement
+     * @return true if the line is a valid return statement, false otherwise
+     */
     private boolean verifyReturn() {
-        Pattern pattern = Pattern.compile("\\s*return\\s*;\\s*");
+        Pattern pattern = Pattern.compile(R_RETURN);
         Matcher match = pattern.matcher(line);
         return match.matches();
     }
 
+    /**
+     * Throws a VerifierException with the given message
+     * @param message
+     */
     private void throwVerifierException(String message) {
-        throw new SJavaException("Line " + lineNumber + ": "+message);
+        throw new SJavaException(String.format(THROWER_PREFIX_TO_EXCEPTION,lineNumber,message));
     }
 
 }

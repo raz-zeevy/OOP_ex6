@@ -1,0 +1,5 @@
+int a = 1;
+char b = 'b';
+double c = 0.1;
+String d = "aaa";
+boolean e = true;

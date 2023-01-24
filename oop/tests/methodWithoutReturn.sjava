@@ -1,0 +1,24 @@
+// some int member
+final int a = 5;
+
+//Another int member
+final int b = a;
+
+// now - a string member
+char s;
+
+void boo(int a, int b, String s) {
+	if (banana) {
+		boo(1,2,"hello");
+		while (false) {
+			soo(true);
+		}
+	}
+}
+
+s = '3';
+
+void soo(boolean b) {
+	return;
+}
+
